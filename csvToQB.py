@@ -5,7 +5,6 @@ import sys
 import traceback
 from datetime import datetime
 from pathlib import Path
-from types import NoneType
 
 import QBComTypes as qb
 
@@ -82,15 +81,15 @@ def WalkRs(respMsgSet: qb.IMsgSetResponse) -> None:
             respType = int(resp.Type.GetValue())
             if respType == qb.ENResponseType.rtDepositAddRs:
                 depositRet: qb.IDepositRet = qb.IDepositRet(resp.Detail)
-                WalkDepositRet(depositRet)
+                WalkDepositRet(depositRet, resp.StatusCode, resp.StatusSeverity, resp.StatusMessage)
             elif respType == qb.ENResponseType.rtCheckAddRs:
                 checkRet: qb.ICheckRet = qb.ICheckRet(resp.Detail)
-                WalkCheckRet(checkRet)
+                WalkCheckRet(checkRet, resp.StatusCode, resp.StatusSeverity, resp.StatusMessage)
             else:
                 Error(f"Unknown response type {qb.ENResponseType(respType).name}")
 
 
-def WalkDepositRet(depositRet: qb.IDepositRet) -> None:
+def WalkDepositRet(depositRet: qb.IDepositRet, statusCode: int, statusSeverity: str, statusMessage: str) -> None:
     """Walk the deposit return."""
     if depositRet is None:
         return
@@ -101,44 +100,52 @@ def WalkDepositRet(depositRet: qb.IDepositRet) -> None:
     txnMemo = depositRet.Memo.GetValue()
     txnTotal = depositRet.DepositTotal.GetValue()
 
-    if depositRet.depositLineRetList is not None:
-        for depositLineRet in depositRet.depositLineRetList:
-            lineAccount = ""
-            if depositLineRet.AccountRef is not None:
-                accountRef = depositLineRet.AccountRef
-                lineAccount = accountRef.FullName.GetValue()
-            lineMemo = depositLineRet.Memo.GetValue()
-            lineAmount = depositLineRet.Amount.GetValue()
-            Error(
-                f"Deposit {txnDate} {txnToAccount} {txnMemo} {txnTotal} {lineAccount} "
-                f"{lineMemo} {lineAmount}"
-            )
+    if statusCode == 0:
+        print(f"Created deposit to {txnToAccount} for {txnTotal}")
+    else:
+        if depositRet.depositLineRetList is not None:
+            for depositLineRet in depositRet.depositLineRetList:
+                lineAccount = ""
+                if depositLineRet.AccountRef is not None:
+                    accountRef = depositLineRet.AccountRef
+                    lineAccount = accountRef.FullName.GetValue()
+                lineMemo = depositLineRet.Memo.GetValue()
+                lineAmount = depositLineRet.Amount.GetValue()
+                Error(
+                    f"Error creating Deposit {txnDate} {txnToAccount} {txnMemo} {txnTotal} {lineAccount} "
+                    f"{lineMemo} {lineAmount}"
+                )
 
 
-def WalkCheckRet(checkRet: qb.ICheckRet) -> NoneType:
+def WalkCheckRet(checkRet: qb.ICheckRet, statusCode: int, statusSeverity: str, statusMessage: str) -> None:
     """Walk the check return."""
     if checkRet is None:
         return
 
     # Get value of TxnDate
     txnDate = checkRet.TxnDate.GetValue()
-    txnToAccount = checkRet.DepositToAccountRef.FullName.GetValue()
+    txnToAccount = checkRet.AccountRef.FullName.GetValue()
     txnMemo = checkRet.Memo.GetValue()
     txnTotal = checkRet.Amount.GetValue()
+    txnRefNumer = checkRet.RefNumber.GetValue()
+    txnPayee = checkRet.PayeeEntityRef.FullName.GetValue()
 
-    if checkRet.ExpenseLineRetList is not None:
-        expenseLineRetList = qb.IExpenseLineRetList(checkRet.ExpenseLineRetList)
-        for expenseLineRet in expenseLineRetList:
-            lineAccount = ""
-            if expenseLineRet.AccountRef is not None:
-                accountRef = expenseLineRet.AccountRef
-                lineAccount = accountRef.FullName.GetValue()
-            lineMemo = expenseLineRet.Memo.GetValue()
-            lineAmount = expenseLineRet.Amount.GetValue()
-            Error(
-                f"Cheque {txnDate} {txnToAccount} {txnMemo} {txnTotal} {lineAccount} "
-                f"{lineMemo} {lineAmount}"
-            )
+    if statusCode == 0:
+        print(f"Created cheque Number {txnRefNumber} to {tnxPayee) for {txnTotal}")
+    else:
+        if checkRet.ExpenseLineRetList is not None:
+            expenseLineRetList = qb.IExpenseLineRetList(checkRet.ExpenseLineRetList)
+            for expenseLineRet in expenseLineRetList:
+                lineAccount = ""
+                if expenseLineRet.AccountRef is not None:
+                    accountRef = expenseLineRet.AccountRef
+                    lineAccount = accountRef.FullName.GetValue()
+                lineMemo = expenseLineRet.Memo.GetValue()
+                lineAmount = expenseLineRet.Amount.GetValue()
+                Error(
+                    f"Error creating Cheque {txnDate} {txnToAccount} {txnMemo} {txnTotal} {lineAccount} "
+                    f"{lineMemo} {lineAmount}"
+                )
 
 
 def ProcessTransactions(
@@ -160,6 +167,7 @@ def ProcessTransactions(
             trnsDate = datetime.strptime(trans["Expense Date"], "%Y-%m-%d")
             trnsId = trans["Float Transaction ID"]
 
+        trnsId = "200000-1011023419"
         trnsDesc = trans["Description"].strip()
         trnsMerch = trans[payeeNameField]
         trnsGlcode = trans["GL Code ID"]
@@ -196,9 +204,9 @@ def ProcessTransactions(
             chkAddRq.PayeeEntityRef.FullName.SetValue(trnsMerch)
             chkAddRq.Memo.SetValue(trnsDesc)
 
-            applyChqToTxnAdd: qb.IApplyCheckToTxnAdd = chkAddRq.ApplyCheckToTxnAddList.Append()
-            applyChqToTxnAdd.TxnID.SetValue(trnsId)
-            applyChqToTxnAdd.Amount.SetValue(trnsAmount)
+            # applyChqToTxnAdd: qb.IApplyCheckToTxnAdd = chkAddRq.ApplyCheckToTxnAddList.Append()
+            # applyChqToTxnAdd.TxnID.SetValue(trnsId)
+            # applyChqToTxnAdd.Amount.SetValue(trnsAmount)
 
             expAdd: qb.IExpenseLineAdd = chkAddRq.ExpenseLineAddList.Append()
             expAdd.AccountRef.FullName.SetValue(trnsGlcode)
@@ -207,7 +215,7 @@ def ProcessTransactions(
             if trnsTax != 0:
                 expAddT: qb.IExpenseLineAdd = chkAddRq.ExpenseLineAddList.Append()
                 expAddT.AccountRef.FullName.SetValue("GST Accounts Receivable")
-                expAdd.Amount.SetValue(trnsTax)
+                expAddT.Amount.SetValue(trnsTax)
                 expAddT.Memo.SetValue("Half of the GST")
 
         count += 1
