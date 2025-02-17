@@ -146,8 +146,8 @@ def ProcessTransactions(
     transactions: list[dict],
     payeeNameField: str,
     reimbursement: bool,
-) -> int:
-    """Process the input file."""
+) -> tuple[int, qb.IMsgSetResponse]:
+    """Process the transaction data."""
     requestMsgSet = sessionManager.CreateMsgSetRequest("CA", 16, 0)
     requestMsgSet.Attributes.OnError = qb.constants.roeContinue
 
@@ -206,9 +206,7 @@ def ProcessTransactions(
 
     respMsgSet = qb.IMsgSetResponse(sessionManager.DoRequests(requestMsgSet))
 
-    WalkRs(respMsgSet)
-
-    return count
+    return count, respMsgSet
 
 
 def main(inputFileName, iifFileName):
@@ -236,9 +234,11 @@ def main(inputFileName, iifFileName):
             if not PreCheck(sessionManager, transactions, payeeNameField):
                 return
 
-            count = ProcessTransactions(
+            count, respMsgSet = ProcessTransactions(
                 sessionManager, transactions, payeeNameField, reimbursement
             )
+
+        WalkRs(respMsgSet)
 
         print(f"Conversion complete, {count} transactions in {inputFileName}")
 
