@@ -143,7 +143,7 @@ def WalkCheckRet(checkRet: qb.ICheckRet):
             )
 
 
-def ProcessInputFile(inputFile: io.TextIOWrapper) -> int | None:
+def ProcessInputFile(inputFile: io.TextIOWrapper) -> int:
     """Process the input file."""
     # the first line is a header, so we can use a DictReader
     csvReader = csv.DictReader(inputFile)
@@ -163,7 +163,7 @@ def ProcessInputFile(inputFile: io.TextIOWrapper) -> int | None:
     # Create a QuickBooks session
     with qb.IQBSessionManager() as sessionManager:
         if not PreCheck(sessionManager, transactions, payeeNameField):
-            return
+            return 0
 
         requestMsgSet = sessionManager.CreateMsgSetRequest("CA", 16, 0)
         requestMsgSet.Attributes.OnError = qb.constants.roeContinue
