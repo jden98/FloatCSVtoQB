@@ -1,7 +1,6 @@
 # Script to convert CSV to IIF output.
 
 import csv
-import io
 import sys
 import traceback
 from datetime import datetime
@@ -146,86 +145,70 @@ def WalkCheckRet(checkRet: qb.ICheckRet) -> NoneType:
             )
 
 
-def ProcessInputFile(inputFile: io.TextIOWrapper) -> int:
+def ProcessTransactions(
+    sessionManager: qb.IQBSessionManager,
+    transactions: list[dict],
+    payeeNameField: str,
+    reimbursement: bool,
+) -> int:
     """Process the input file."""
-    # the first line is a header, so we can use a DictReader
-    csvReader = csv.DictReader(inputFile)
+    requestMsgSet = sessionManager.CreateMsgSetRequest("CA", 16, 0)
+    requestMsgSet.Attributes.OnError = qb.constants.roeContinue
 
-    # load the full set of transactions into memory
-    transactions = list(csvReader)
+    count = 0
+    for trans in transactions:
+        if reimbursement:
+            trnsDate = datetime.strptime(trans["Expense Date"], "%d/%m/%y")
+        else:
+            trnsDate = datetime.strptime(trans["Expense Date"], "%y-%m-%d")
 
-    if csvReader.fieldnames and "Report Name" in csvReader.fieldnames:
-        # this must be a reimbursement file
-        reimbursement = True
-        payeeNameField = "Requester"
-    else:
-        # this must be a standard transactions file
-        reimbursement = False
-        payeeNameField = "Merchant Name"
+        trnsDesc = trans["Description"].strip()
+        trnsMerch = trans[payeeNameField]
+        trnsGlcode = trans["GL Code ID"]
 
-    # Create a QuickBooks session
-    with qb.IQBSessionManager() as sessionManager:
-        if not PreCheck(sessionManager, transactions, payeeNameField):
-            return 0
+        try:
+            trnsAmount = -1 * float(trans.get("Total", 0))
+            trnsSubtotal = float(trans.get("Subtotal", 0))
+            trnsTax = float(trans.get("Tax", 0))
+        except ValueError:
+            Error("Invalid number format in transaction.")
+            continue
 
-        requestMsgSet = sessionManager.CreateMsgSetRequest("CA", 16, 0)
-        requestMsgSet.Attributes.OnError = qb.constants.roeContinue
+        if (
+            trnsAmount < 0
+            and trnsGlcode == "Other Income:Interest Income"
+            and not reimbursement
+        ):
+            # trnsType = "DEPOSIT"
+            depAddRq = qb.IDepositAdd(requestMsgSet.AppendDepositAddRq())
+            depAddRq.DepositToAccount.FullName.SetValue("Float Financial")
+            depAddRq.TxnDate.SetValue(trnsDate)
+            depAddRq.Memo.SetValue(trnsDesc)
+            depLineAddRq: qb.IDepositLineAdd = depAddRq.DepositLineAddList.Append()
+            depositInfo = depLineAddRq.ORDepositLineAdd.DepositInfo
+            depositInfo.AccountRef.FullName.SetValue(trnsGlcode)
+            depositInfo.Amount.SetValue(trnsAmount)
 
-        count = 0
-        for trans in transactions:
-            if reimbursement:
-                trnsDate = datetime.strptime(trans["Expense Date"], "%d/%m/%y")
-            else:
-                trnsDate = datetime.strptime(trans["Expense Date"], "%y-%m-%d")
+        else:
+            # trnsType = "CHEQUE"
+            chkAddRq = qb.ICheckAdd(requestMsgSet.AppendCheckAddRq())
+            chkAddRq.AccountRef.FullName.SetValue("Float Financial")
+            chkAddRq.IsToBePrinted.SetValue(False)
+            chkAddRq.TxnDate.SetValue(trnsDate)
+            chkAddRq.PayeeEntityRef.FullName.SetValue(trnsMerch)
+            expAdd: qb.IExpenseLineAdd = chkAddRq.ExpenseLineAddList.Append()
+            expAdd.AccountRef.FullName.SetValue(trnsGlcode)
+            expAdd.Amount.SetValue(trnsSubtotal)
+            expAdd.Memo.SetValue(trnsDesc)
+            if trnsTax != 0:
+                expAddT: qb.IExpenseLineAdd = chkAddRq.ExpenseLineAddList.Append()
+                expAddT.AccountRef.FullName.SetValue("GST Accounts Receivable")
+                expAdd.Amount.SetValue(trnsTax)
+                expAddT.Memo.SetValue("Half of the GST")
 
-            trnsDesc = trans["Description"].strip()
-            trnsMerch = trans[payeeNameField]
-            trnsGlcode = trans["GL Code ID"]
+        count += 1
 
-            try:
-                trnsAmount = -1 * float(trans.get("Total", 0))
-                trnsSubtotal = float(trans.get("Subtotal", 0))
-                trnsTax = float(trans.get("Tax", 0))
-            except ValueError:
-                Error("Invalid number format in transaction.")
-                continue
-
-            if (
-                trnsAmount < 0
-                and trnsGlcode == "Other Income:Interest Income"
-                and not reimbursement
-            ):
-                # trnsType = "DEPOSIT"
-                depAddRq = qb.IDepositAdd(requestMsgSet.AppendDepositAddRq())
-                depAddRq.DepositToAccount.FullName.SetValue("Float Financial")
-                depAddRq.TxnDate.SetValue(trnsDate)
-                depAddRq.Memo.SetValue(trnsDesc)
-                depLineAddRq: qb.IDepositLineAdd = depAddRq.DepositLineAddList.Append()
-                depLineAddRq.ORDepositLineAdd.DepositInfo.AccountRef.FullName.SetValue(
-                    trnsGlcode
-                )
-                depLineAddRq.ORDepositLineAdd.DepositInfo.Amount.SetValue(trnsAmount)
-
-            else:
-                # trnsType = "CHEQUE"
-                chkAddRq = qb.ICheckAdd(requestMsgSet.AppendCheckAddRq())
-                chkAddRq.AccountRef.FullName.SetValue("Float Financial")
-                chkAddRq.IsToBePrinted.SetValue(False)
-                chkAddRq.TxnDate.SetValue(trnsDate)
-                chkAddRq.PayeeEntityRef.FullName.SetValue(trnsMerch)
-                expAdd: qb.IExpenseLineAdd = chkAddRq.ExpenseLineAddList.Append()
-                expAdd.AccountRef.FullName.SetValue(trnsGlcode)
-                expAdd.Amount.SetValue(trnsSubtotal)
-                expAdd.Memo.SetValue(trnsDesc)
-                if trnsTax != 0:
-                    expAddT: qb.IExpenseLineAdd = chkAddRq.ExpenseLineAddList.Append()
-                    expAddT.AccountRef.FullName.SetValue("GST Accounts Receivable")
-                    expAdd.Amount.SetValue(trnsTax)
-                    expAddT.Memo.SetValue("Half of the GST")
-
-            count += 1
-
-        respMsgSet = qb.IMsgSetResponse(sessionManager.DoRequests(requestMsgSet))
+    respMsgSet = qb.IMsgSetResponse(sessionManager.DoRequests(requestMsgSet))
 
     WalkRs(respMsgSet)
 
@@ -239,7 +222,27 @@ def main(inputFileName, iifFileName):
     try:
         # open the files
         with inputFilePath.open("r", newline="", encoding="utf-8") as inputFile:
-            count = ProcessInputFile(inputFile)
+            csvReader = csv.DictReader(inputFile)
+
+            # load the full set of transactions into memory
+            transactions = list(csvReader)
+
+            if csvReader.fieldnames and "Report Name" in csvReader.fieldnames:
+                # this must be a reimbursement file
+                reimbursement = True
+                payeeNameField = "Requester"
+            else:
+                # this must be a standard transactions file
+                reimbursement = False
+                payeeNameField = "Merchant Name"
+
+        with qb.IQBSessionManager() as sessionManager:
+            if not PreCheck(sessionManager, transactions, payeeNameField):
+                return
+
+            count = ProcessTransactions(
+                sessionManager, transactions, payeeNameField, reimbursement
+            )
 
         print(f"Conversion complete, {count} transactions in {inputFileName}")
 
