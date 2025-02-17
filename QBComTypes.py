@@ -23198,7 +23198,7 @@ class IMsgSetRequest(DispatchBaseClass):
     coclass_clsid = None
 
     # Result is of type IARRefundCreditCardAdd
-    def AppendARRefundCreditCardAddRq(self) -> IARRefundCreditCardAdd:
+    def AppendARRefundCreditCardAddRq(self):
         'method AppendARRefundCreditCardAddRq'
         ret = self._oleobj_.InvokeTypes(205, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23206,7 +23206,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IARRefundCreditCardQuery
-    def AppendARRefundCreditCardQueryRq(self) -> IARRefundCreditCardQuery:
+    def AppendARRefundCreditCardQueryRq(self):
         'method AppendARRefundCreditCardQueryRq'
         ret = self._oleobj_.InvokeTypes(83, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23214,7 +23214,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IAccountAdd
-    def AppendAccountAddRq(self) -> IAccountAdd:
+    def AppendAccountAddRq(self):
         'method AppendAccountAddRq'
         ret = self._oleobj_.InvokeTypes(135, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23222,7 +23222,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IAccountMod
-    def AppendAccountModRq(self) -> IAccountMod:
+    def AppendAccountModRq(self):
         'method AppendAccountModRq'
         ret = self._oleobj_.InvokeTypes(134, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23230,7 +23230,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IAccountQuery
-    def AppendAccountQueryRq(self) -> IAccountQuery:
+    def AppendAccountQueryRq(self):
         'method AppendAccountQueryRq'
         ret = self._oleobj_.InvokeTypes(79, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23242,7 +23242,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return self._oleobj_.InvokeTypes(201, LCID, 1, (24, 0), (),)
 
     # Result is of type IAgingReportQuery
-    def AppendAgingReportQueryRq(self) -> IAgingReportQuery:
+    def AppendAgingReportQueryRq(self):
         'method AppendAgingReportQueryRq'
         ret = self._oleobj_.InvokeTypes(18, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23250,7 +23250,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IBarCodeQuery
-    def AppendBarCodeQueryRq(self) -> IBarCodeQuery:
+    def AppendBarCodeQueryRq(self):
         'method AppendBarCodeQueryRq'
         ret = self._oleobj_.InvokeTypes(95, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23258,7 +23258,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IBillAdd
-    def AppendBillAddRq(self) -> IBillAdd:
+    def AppendBillAddRq(self):
         'method AppendBillAddRq'
         ret = self._oleobj_.InvokeTypes(9, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23266,7 +23266,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IBillMod
-    def AppendBillModRq(self) -> IBillMod:
+    def AppendBillModRq(self):
         'method AppendBillModRq'
         ret = self._oleobj_.InvokeTypes(8, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23274,7 +23274,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IBillPaymentCheckAdd
-    def AppendBillPaymentCheckAddRq(self) -> IBillPaymentCheckAdd:
+    def AppendBillPaymentCheckAddRq(self):
         'method AppendBillPaymentCheckAddRq'
         ret = self._oleobj_.InvokeTypes(156, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23282,7 +23282,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IBillPaymentCheckMod
-    def AppendBillPaymentCheckModRq(self) -> IBillPaymentCheckMod:
+    def AppendBillPaymentCheckModRq(self):
         'method AppendBillPaymentCheckModRq'
         ret = self._oleobj_.InvokeTypes(155, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23290,7 +23290,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IBillPaymentCheckQuery
-    def AppendBillPaymentCheckQueryRq(self) -> IBillPaymentCheckQuery:
+    def AppendBillPaymentCheckQueryRq(self):
         'method AppendBillPaymentCheckQueryRq'
         ret = self._oleobj_.InvokeTypes(42, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23298,7 +23298,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IBillPaymentCreditCardAdd
-    def AppendBillPaymentCreditCardAddRq(self) -> IBillPaymentCreditCardAdd:
+    def AppendBillPaymentCreditCardAddRq(self):
         'method AppendBillPaymentCreditCardAddRq'
         ret = self._oleobj_.InvokeTypes(51, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23306,7 +23306,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IBillPaymentCreditCardQuery
-    def AppendBillPaymentCreditCardQueryRq(self) -> IBillPaymentCreditCardQuery:
+    def AppendBillPaymentCreditCardQueryRq(self):
         'method AppendBillPaymentCreditCardQueryRq'
         ret = self._oleobj_.InvokeTypes(31, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23314,7 +23314,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IBillQuery
-    def AppendBillQueryRq(self) -> IBillQuery:
+    def AppendBillQueryRq(self):
         'method AppendBillQueryRq'
         ret = self._oleobj_.InvokeTypes(69, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23322,7 +23322,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IBillToPayQuery
-    def AppendBillToPayQueryRq(self) -> IBillToPayQuery:
+    def AppendBillToPayQueryRq(self):
         'method AppendBillToPayQueryRq'
         ret = self._oleobj_.InvokeTypes(177, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23330,7 +23330,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IBillingRateAdd
-    def AppendBillingRateAddRq(self) -> IBillingRateAdd:
+    def AppendBillingRateAddRq(self):
         'method AppendBillingRateAddRq'
         ret = self._oleobj_.InvokeTypes(26, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23338,7 +23338,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IBillingRateQuery
-    def AppendBillingRateQueryRq(self) -> IBillingRateQuery:
+    def AppendBillingRateQueryRq(self):
         'method AppendBillingRateQueryRq'
         ret = self._oleobj_.InvokeTypes(220, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23346,7 +23346,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IBudgetSummaryReportQuery
-    def AppendBudgetSummaryReportQueryRq(self) -> IBudgetSummaryReportQuery:
+    def AppendBudgetSummaryReportQueryRq(self):
         'method AppendBudgetSummaryReportQueryRq'
         ret = self._oleobj_.InvokeTypes(57, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23354,7 +23354,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IBuildAssemblyAdd
-    def AppendBuildAssemblyAddRq(self) -> IBuildAssemblyAdd:
+    def AppendBuildAssemblyAddRq(self):
         'method AppendBuildAssemblyAddRq'
         ret = self._oleobj_.InvokeTypes(173, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23362,7 +23362,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IBuildAssemblyMod
-    def AppendBuildAssemblyModRq(self) -> IBuildAssemblyMod:
+    def AppendBuildAssemblyModRq(self):
         'method AppendBuildAssemblyModRq'
         ret = self._oleobj_.InvokeTypes(172, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23370,7 +23370,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IBuildAssemblyQuery
-    def AppendBuildAssemblyQueryRq(self) -> IBuildAssemblyQuery:
+    def AppendBuildAssemblyQueryRq(self):
         'method AppendBuildAssemblyQueryRq'
         ret = self._oleobj_.InvokeTypes(41, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23378,7 +23378,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IChargeAdd
-    def AppendChargeAddRq(self) -> IChargeAdd:
+    def AppendChargeAddRq(self):
         'method AppendChargeAddRq'
         ret = self._oleobj_.InvokeTypes(145, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23386,7 +23386,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IChargeMod
-    def AppendChargeModRq(self) -> IChargeMod:
+    def AppendChargeModRq(self):
         'method AppendChargeModRq'
         ret = self._oleobj_.InvokeTypes(144, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23394,7 +23394,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IChargeQuery
-    def AppendChargeQueryRq(self) -> IChargeQuery:
+    def AppendChargeQueryRq(self):
         'method AppendChargeQueryRq'
         ret = self._oleobj_.InvokeTypes(112, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23402,7 +23402,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ICheckAdd
-    def AppendCheckAddRq(self) -> ICheckAdd:
+    def AppendCheckAddRq(self):
         'method AppendCheckAddRq'
         ret = self._oleobj_.InvokeTypes(191, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23410,7 +23410,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ICheckMod
-    def AppendCheckModRq(self) -> ICheckMod:
+    def AppendCheckModRq(self):
         'method AppendCheckModRq'
         ret = self._oleobj_.InvokeTypes(190, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23418,7 +23418,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ICheckQuery
-    def AppendCheckQueryRq(self) -> ICheckQuery:
+    def AppendCheckQueryRq(self):
         'method AppendCheckQueryRq'
         ret = self._oleobj_.InvokeTypes(25, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23426,7 +23426,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IClassAdd
-    def AppendClassAddRq(self) -> IClassAdd:
+    def AppendClassAddRq(self):
         'method AppendClassAddRq'
         ret = self._oleobj_.InvokeTypes(143, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23434,7 +23434,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IClassMod
-    def AppendClassModRq(self) -> IClassMod:
+    def AppendClassModRq(self):
         'method AppendClassModRq'
         ret = self._oleobj_.InvokeTypes(142, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23442,7 +23442,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IClassQuery
-    def AppendClassQueryRq(self) -> IClassQuery:
+    def AppendClassQueryRq(self):
         'method AppendClassQueryRq'
         ret = self._oleobj_.InvokeTypes(157, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23450,7 +23450,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IClearedStatusMod
-    def AppendClearedStatusModRq(self) -> IClearedStatusMod:
+    def AppendClearedStatusModRq(self):
         'method AppendClearedStatusModRq'
         ret = self._oleobj_.InvokeTypes(210, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23458,7 +23458,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ICompanyActivityQuery
-    def AppendCompanyActivityQueryRq(self) -> ICompanyActivityQuery:
+    def AppendCompanyActivityQueryRq(self):
         'method AppendCompanyActivityQueryRq'
         ret = self._oleobj_.InvokeTypes(226, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23466,7 +23466,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ICompanyQuery
-    def AppendCompanyQueryRq(self) -> ICompanyQuery:
+    def AppendCompanyQueryRq(self):
         'method AppendCompanyQueryRq'
         ret = self._oleobj_.InvokeTypes(102, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23474,7 +23474,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ICreditCardChargeAdd
-    def AppendCreditCardChargeAddRq(self) -> ICreditCardChargeAdd:
+    def AppendCreditCardChargeAddRq(self):
         'method AppendCreditCardChargeAddRq'
         ret = self._oleobj_.InvokeTypes(137, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23482,7 +23482,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ICreditCardChargeMod
-    def AppendCreditCardChargeModRq(self) -> ICreditCardChargeMod:
+    def AppendCreditCardChargeModRq(self):
         'method AppendCreditCardChargeModRq'
         ret = self._oleobj_.InvokeTypes(136, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23490,7 +23490,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ICreditCardChargeQuery
-    def AppendCreditCardChargeQueryRq(self) -> ICreditCardChargeQuery:
+    def AppendCreditCardChargeQueryRq(self):
         'method AppendCreditCardChargeQueryRq'
         ret = self._oleobj_.InvokeTypes(195, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23498,7 +23498,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ICreditCardCreditAdd
-    def AppendCreditCardCreditAddRq(self) -> ICreditCardCreditAdd:
+    def AppendCreditCardCreditAddRq(self):
         'method AppendCreditCardCreditAddRq'
         ret = self._oleobj_.InvokeTypes(123, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23506,7 +23506,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ICreditCardCreditMod
-    def AppendCreditCardCreditModRq(self) -> ICreditCardCreditMod:
+    def AppendCreditCardCreditModRq(self):
         'method AppendCreditCardCreditModRq'
         ret = self._oleobj_.InvokeTypes(122, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23514,7 +23514,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ICreditCardCreditQuery
-    def AppendCreditCardCreditQueryRq(self) -> ICreditCardCreditQuery:
+    def AppendCreditCardCreditQueryRq(self):
         'method AppendCreditCardCreditQueryRq'
         ret = self._oleobj_.InvokeTypes(203, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23522,7 +23522,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ICreditMemoAdd
-    def AppendCreditMemoAddRq(self) -> ICreditMemoAdd:
+    def AppendCreditMemoAddRq(self):
         'method AppendCreditMemoAddRq'
         ret = self._oleobj_.InvokeTypes(184, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23530,7 +23530,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ICreditMemoMod
-    def AppendCreditMemoModRq(self) -> ICreditMemoMod:
+    def AppendCreditMemoModRq(self):
         'method AppendCreditMemoModRq'
         ret = self._oleobj_.InvokeTypes(183, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23538,7 +23538,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ICreditMemoQuery
-    def AppendCreditMemoQueryRq(self) -> ICreditMemoQuery:
+    def AppendCreditMemoQueryRq(self):
         'method AppendCreditMemoQueryRq'
         ret = self._oleobj_.InvokeTypes(50, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23546,7 +23546,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ICurrencyAdd
-    def AppendCurrencyAddRq(self) -> ICurrencyAdd:
+    def AppendCurrencyAddRq(self):
         'method AppendCurrencyAddRq'
         ret = self._oleobj_.InvokeTypes(104, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23554,7 +23554,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ICurrencyMod
-    def AppendCurrencyModRq(self) -> ICurrencyMod:
+    def AppendCurrencyModRq(self):
         'method AppendCurrencyModRq'
         ret = self._oleobj_.InvokeTypes(103, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23562,7 +23562,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ICurrencyQuery
-    def AppendCurrencyQueryRq(self) -> ICurrencyQuery:
+    def AppendCurrencyQueryRq(self):
         'method AppendCurrencyQueryRq'
         ret = self._oleobj_.InvokeTypes(32, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23570,7 +23570,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ICustomDetailReportQuery
-    def AppendCustomDetailReportQueryRq(self) -> ICustomDetailReportQuery:
+    def AppendCustomDetailReportQueryRq(self):
         'method AppendCustomDetailReportQueryRq'
         ret = self._oleobj_.InvokeTypes(30, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23578,7 +23578,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ICustomSummaryReportQuery
-    def AppendCustomSummaryReportQueryRq(self) -> ICustomSummaryReportQuery:
+    def AppendCustomSummaryReportQueryRq(self):
         'method AppendCustomSummaryReportQueryRq'
         ret = self._oleobj_.InvokeTypes(7, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23586,7 +23586,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ICustomerAdd
-    def AppendCustomerAddRq(self) -> ICustomerAdd:
+    def AppendCustomerAddRq(self):
         'method AppendCustomerAddRq'
         ret = self._oleobj_.InvokeTypes(189, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23594,7 +23594,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ICustomerMod
-    def AppendCustomerModRq(self) -> ICustomerMod:
+    def AppendCustomerModRq(self):
         'method AppendCustomerModRq'
         ret = self._oleobj_.InvokeTypes(188, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23602,7 +23602,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ICustomerMsgAdd
-    def AppendCustomerMsgAddRq(self) -> ICustomerMsgAdd:
+    def AppendCustomerMsgAddRq(self):
         'method AppendCustomerMsgAddRq'
         ret = self._oleobj_.InvokeTypes(21, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23610,7 +23610,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ICustomerMsgQuery
-    def AppendCustomerMsgQueryRq(self) -> ICustomerMsgQuery:
+    def AppendCustomerMsgQueryRq(self):
         'method AppendCustomerMsgQueryRq'
         ret = self._oleobj_.InvokeTypes(27, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23618,7 +23618,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ICustomerQuery
-    def AppendCustomerQueryRq(self) -> ICustomerQuery:
+    def AppendCustomerQueryRq(self):
         'method AppendCustomerQueryRq'
         ret = self._oleobj_.InvokeTypes(127, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23626,7 +23626,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ICustomerTypeAdd
-    def AppendCustomerTypeAddRq(self) -> ICustomerTypeAdd:
+    def AppendCustomerTypeAddRq(self):
         'method AppendCustomerTypeAddRq'
         ret = self._oleobj_.InvokeTypes(22, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23634,7 +23634,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ICustomerTypeQuery
-    def AppendCustomerTypeQueryRq(self) -> ICustomerTypeQuery:
+    def AppendCustomerTypeQueryRq(self):
         'method AppendCustomerTypeQueryRq'
         ret = self._oleobj_.InvokeTypes(193, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23642,7 +23642,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IDataEventRecoveryInfoDel
-    def AppendDataEventRecoveryInfoDelRq(self) -> IDataEventRecoveryInfoDel:
+    def AppendDataEventRecoveryInfoDelRq(self):
         'method AppendDataEventRecoveryInfoDelRq'
         ret = self._oleobj_.InvokeTypes(180, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23650,7 +23650,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IDataEventRecoveryInfoQuery
-    def AppendDataEventRecoveryInfoQueryRq(self) -> IDataEventRecoveryInfoQuery:
+    def AppendDataEventRecoveryInfoQueryRq(self):
         'method AppendDataEventRecoveryInfoQueryRq'
         ret = self._oleobj_.InvokeTypes(128, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23658,7 +23658,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IDataExtAdd
-    def AppendDataExtAddRq(self) -> IDataExtAdd:
+    def AppendDataExtAddRq(self):
         'method AppendDataExtAddRq'
         ret = self._oleobj_.InvokeTypes(17, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23666,7 +23666,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IDataExtDefAdd
-    def AppendDataExtDefAddRq(self) -> IDataExtDefAdd:
+    def AppendDataExtDefAddRq(self):
         'method AppendDataExtDefAddRq'
         ret = self._oleobj_.InvokeTypes(106, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23674,7 +23674,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IDataExtDefDel
-    def AppendDataExtDefDelRq(self) -> IDataExtDefDel:
+    def AppendDataExtDefDelRq(self):
         'method AppendDataExtDefDelRq'
         ret = self._oleobj_.InvokeTypes(176, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23682,7 +23682,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IDataExtDefMod
-    def AppendDataExtDefModRq(self) -> IDataExtDefMod:
+    def AppendDataExtDefModRq(self):
         'method AppendDataExtDefModRq'
         ret = self._oleobj_.InvokeTypes(105, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23690,7 +23690,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IDataExtDefQuery
-    def AppendDataExtDefQueryRq(self) -> IDataExtDefQuery:
+    def AppendDataExtDefQueryRq(self):
         'method AppendDataExtDefQueryRq'
         ret = self._oleobj_.InvokeTypes(236, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23698,7 +23698,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IDataExtDel
-    def AppendDataExtDelRq(self) -> IDataExtDel:
+    def AppendDataExtDelRq(self):
         'method AppendDataExtDelRq'
         ret = self._oleobj_.InvokeTypes(97, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23706,7 +23706,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IDataExtMod
-    def AppendDataExtModRq(self) -> IDataExtMod:
+    def AppendDataExtModRq(self):
         'method AppendDataExtModRq'
         ret = self._oleobj_.InvokeTypes(16, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23714,7 +23714,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IDateDrivenTermsAdd
-    def AppendDateDrivenTermsAddRq(self) -> IDateDrivenTermsAdd:
+    def AppendDateDrivenTermsAddRq(self):
         'method AppendDateDrivenTermsAddRq'
         ret = self._oleobj_.InvokeTypes(199, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23722,7 +23722,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IDateDrivenTermsQuery
-    def AppendDateDrivenTermsQueryRq(self) -> IDateDrivenTermsQuery:
+    def AppendDateDrivenTermsQueryRq(self):
         'method AppendDateDrivenTermsQueryRq'
         ret = self._oleobj_.InvokeTypes(120, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23730,7 +23730,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IDepositAdd
-    def AppendDepositAddRq(self) -> IDepositAdd:
+    def AppendDepositAddRq(self):
         'method AppendDepositAddRq'
         ret = self._oleobj_.InvokeTypes(164, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23738,7 +23738,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IDepositMod
-    def AppendDepositModRq(self) -> IDepositMod:
+    def AppendDepositModRq(self):
         'method AppendDepositModRq'
         ret = self._oleobj_.InvokeTypes(163, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23746,7 +23746,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IDepositQuery
-    def AppendDepositQueryRq(self) -> IDepositQuery:
+    def AppendDepositQueryRq(self):
         'method AppendDepositQueryRq'
         ret = self._oleobj_.InvokeTypes(132, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23754,7 +23754,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IEmployeeAdd
-    def AppendEmployeeAddRq(self) -> IEmployeeAdd:
+    def AppendEmployeeAddRq(self):
         'method AppendEmployeeAddRq'
         ret = self._oleobj_.InvokeTypes(111, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23762,7 +23762,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IEmployeeMod
-    def AppendEmployeeModRq(self) -> IEmployeeMod:
+    def AppendEmployeeModRq(self):
         'method AppendEmployeeModRq'
         ret = self._oleobj_.InvokeTypes(110, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23770,7 +23770,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IEmployeeQuery
-    def AppendEmployeeQueryRq(self) -> IEmployeeQuery:
+    def AppendEmployeeQueryRq(self):
         'method AppendEmployeeQueryRq'
         ret = self._oleobj_.InvokeTypes(208, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23778,7 +23778,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IEntityQuery
-    def AppendEntityQueryRq(self) -> IEntityQuery:
+    def AppendEntityQueryRq(self):
         'method AppendEntityQueryRq'
         ret = self._oleobj_.InvokeTypes(58, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23786,7 +23786,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IEstimateAdd
-    def AppendEstimateAddRq(self) -> IEstimateAdd:
+    def AppendEstimateAddRq(self):
         'method AppendEstimateAddRq'
         ret = self._oleobj_.InvokeTypes(149, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23794,7 +23794,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IEstimateMod
-    def AppendEstimateModRq(self) -> IEstimateMod:
+    def AppendEstimateModRq(self):
         'method AppendEstimateModRq'
         ret = self._oleobj_.InvokeTypes(148, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23802,7 +23802,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IEstimateQuery
-    def AppendEstimateQueryRq(self) -> IEstimateQuery:
+    def AppendEstimateQueryRq(self):
         'method AppendEstimateQueryRq'
         ret = self._oleobj_.InvokeTypes(204, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23810,7 +23810,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IForm1099CategoryAccountMappingMod
-    def AppendForm1099CategoryAccountMappingModRq(self) -> IForm1099CategoryAccountMappingMod:
+    def AppendForm1099CategoryAccountMappingModRq(self):
         'method AppendForm1099CategoryAccountMappingModRq'
         ret = self._oleobj_.InvokeTypes(221, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23818,7 +23818,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IForm1099CategoryAccountMappingQuery
-    def AppendForm1099CategoryAccountMappingQueryRq(self) -> IForm1099CategoryAccountMappingQuery:
+    def AppendForm1099CategoryAccountMappingQueryRq(self):
         'method AppendForm1099CategoryAccountMappingQueryRq'
         ret = self._oleobj_.InvokeTypes(84, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23826,7 +23826,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IGeneralDetailReportQuery
-    def AppendGeneralDetailReportQueryRq(self) -> IGeneralDetailReportQuery:
+    def AppendGeneralDetailReportQueryRq(self):
         'method AppendGeneralDetailReportQueryRq'
         ret = self._oleobj_.InvokeTypes(94, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23834,7 +23834,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IGeneralSummaryReportQuery
-    def AppendGeneralSummaryReportQueryRq(self) -> IGeneralSummaryReportQuery:
+    def AppendGeneralSummaryReportQueryRq(self):
         'method AppendGeneralSummaryReportQueryRq'
         ret = self._oleobj_.InvokeTypes(66, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23842,7 +23842,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IHostQuery
-    def AppendHostQueryRq(self) -> IHostQuery:
+    def AppendHostQueryRq(self):
         'method AppendHostQueryRq'
         ret = self._oleobj_.InvokeTypes(216, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23850,7 +23850,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IInventoryAdjustmentAdd
-    def AppendInventoryAdjustmentAddRq(self) -> IInventoryAdjustmentAdd:
+    def AppendInventoryAdjustmentAddRq(self):
         'method AppendInventoryAdjustmentAddRq'
         ret = self._oleobj_.InvokeTypes(56, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23858,7 +23858,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IInventoryAdjustmentMod
-    def AppendInventoryAdjustmentModRq(self) -> IInventoryAdjustmentMod:
+    def AppendInventoryAdjustmentModRq(self):
         'method AppendInventoryAdjustmentModRq'
         ret = self._oleobj_.InvokeTypes(55, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23866,7 +23866,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IInventoryAdjustmentQuery
-    def AppendInventoryAdjustmentQueryRq(self) -> IInventoryAdjustmentQuery:
+    def AppendInventoryAdjustmentQueryRq(self):
         'method AppendInventoryAdjustmentQueryRq'
         ret = self._oleobj_.InvokeTypes(161, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23874,7 +23874,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IInventorySiteAdd
-    def AppendInventorySiteAddRq(self) -> IInventorySiteAdd:
+    def AppendInventorySiteAddRq(self):
         'method AppendInventorySiteAddRq'
         ret = self._oleobj_.InvokeTypes(89, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23882,7 +23882,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IInventorySiteMod
-    def AppendInventorySiteModRq(self) -> IInventorySiteMod:
+    def AppendInventorySiteModRq(self):
         'method AppendInventorySiteModRq'
         ret = self._oleobj_.InvokeTypes(88, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23890,7 +23890,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IInventorySiteQuery
-    def AppendInventorySiteQueryRq(self) -> IInventorySiteQuery:
+    def AppendInventorySiteQueryRq(self):
         'method AppendInventorySiteQueryRq'
         ret = self._oleobj_.InvokeTypes(200, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23898,7 +23898,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IInvoiceAdd
-    def AppendInvoiceAddRq(self) -> IInvoiceAdd:
+    def AppendInvoiceAddRq(self):
         'method AppendInvoiceAddRq'
         ret = self._oleobj_.InvokeTypes(68, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23906,7 +23906,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IInvoiceMod
-    def AppendInvoiceModRq(self) -> IInvoiceMod:
+    def AppendInvoiceModRq(self):
         'method AppendInvoiceModRq'
         ret = self._oleobj_.InvokeTypes(67, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23914,7 +23914,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IInvoiceQuery
-    def AppendInvoiceQueryRq(self) -> IInvoiceQuery:
+    def AppendInvoiceQueryRq(self):
         'method AppendInvoiceQueryRq'
         ret = self._oleobj_.InvokeTypes(87, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23922,7 +23922,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemAssembliesCanBuildQuery
-    def AppendItemAssembliesCanBuildQueryRq(self) -> IItemAssembliesCanBuildQuery:
+    def AppendItemAssembliesCanBuildQueryRq(self):
         'method AppendItemAssembliesCanBuildQueryRq'
         ret = self._oleobj_.InvokeTypes(39, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23930,7 +23930,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemDiscountAdd
-    def AppendItemDiscountAddRq(self) -> IItemDiscountAdd:
+    def AppendItemDiscountAddRq(self):
         'method AppendItemDiscountAddRq'
         ret = self._oleobj_.InvokeTypes(229, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23938,7 +23938,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemDiscountMod
-    def AppendItemDiscountModRq(self) -> IItemDiscountMod:
+    def AppendItemDiscountModRq(self):
         'method AppendItemDiscountModRq'
         ret = self._oleobj_.InvokeTypes(228, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23946,7 +23946,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemDiscountQuery
-    def AppendItemDiscountQueryRq(self) -> IItemDiscountQuery:
+    def AppendItemDiscountQueryRq(self):
         'method AppendItemDiscountQueryRq'
         ret = self._oleobj_.InvokeTypes(48, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23954,7 +23954,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemFixedAssetAdd
-    def AppendItemFixedAssetAddRq(self) -> IItemFixedAssetAdd:
+    def AppendItemFixedAssetAddRq(self):
         'method AppendItemFixedAssetAddRq'
         ret = self._oleobj_.InvokeTypes(151, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23962,7 +23962,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemFixedAssetMod
-    def AppendItemFixedAssetModRq(self) -> IItemFixedAssetMod:
+    def AppendItemFixedAssetModRq(self):
         'method AppendItemFixedAssetModRq'
         ret = self._oleobj_.InvokeTypes(150, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23970,7 +23970,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemFixedAssetQuery
-    def AppendItemFixedAssetQueryRq(self) -> IItemFixedAssetQuery:
+    def AppendItemFixedAssetQueryRq(self):
         'method AppendItemFixedAssetQueryRq'
         ret = self._oleobj_.InvokeTypes(138, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23978,7 +23978,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemGroupAdd
-    def AppendItemGroupAddRq(self) -> IItemGroupAdd:
+    def AppendItemGroupAddRq(self):
         'method AppendItemGroupAddRq'
         ret = self._oleobj_.InvokeTypes(125, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23986,7 +23986,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemGroupMod
-    def AppendItemGroupModRq(self) -> IItemGroupMod:
+    def AppendItemGroupModRq(self):
         'method AppendItemGroupModRq'
         ret = self._oleobj_.InvokeTypes(124, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -23994,7 +23994,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemGroupQuery
-    def AppendItemGroupQueryRq(self) -> IItemGroupQuery:
+    def AppendItemGroupQueryRq(self):
         'method AppendItemGroupQueryRq'
         ret = self._oleobj_.InvokeTypes(174, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24002,7 +24002,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemInventoryAdd
-    def AppendItemInventoryAddRq(self) -> IItemInventoryAdd:
+    def AppendItemInventoryAddRq(self):
         'method AppendItemInventoryAddRq'
         ret = self._oleobj_.InvokeTypes(231, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24010,7 +24010,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemInventoryAssemblyAdd
-    def AppendItemInventoryAssemblyAddRq(self) -> IItemInventoryAssemblyAdd:
+    def AppendItemInventoryAssemblyAddRq(self):
         'method AppendItemInventoryAssemblyAddRq'
         ret = self._oleobj_.InvokeTypes(13, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24018,7 +24018,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemInventoryAssemblyMod
-    def AppendItemInventoryAssemblyModRq(self) -> IItemInventoryAssemblyMod:
+    def AppendItemInventoryAssemblyModRq(self):
         'method AppendItemInventoryAssemblyModRq'
         ret = self._oleobj_.InvokeTypes(12, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24026,7 +24026,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemInventoryAssemblyQuery
-    def AppendItemInventoryAssemblyQueryRq(self) -> IItemInventoryAssemblyQuery:
+    def AppendItemInventoryAssemblyQueryRq(self):
         'method AppendItemInventoryAssemblyQueryRq'
         ret = self._oleobj_.InvokeTypes(65, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24034,7 +24034,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemInventoryMod
-    def AppendItemInventoryModRq(self) -> IItemInventoryMod:
+    def AppendItemInventoryModRq(self):
         'method AppendItemInventoryModRq'
         ret = self._oleobj_.InvokeTypes(230, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24042,7 +24042,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemInventoryQuery
-    def AppendItemInventoryQueryRq(self) -> IItemInventoryQuery:
+    def AppendItemInventoryQueryRq(self):
         'method AppendItemInventoryQueryRq'
         ret = self._oleobj_.InvokeTypes(213, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24050,7 +24050,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemNonInventoryAdd
-    def AppendItemNonInventoryAddRq(self) -> IItemNonInventoryAdd:
+    def AppendItemNonInventoryAddRq(self):
         'method AppendItemNonInventoryAddRq'
         ret = self._oleobj_.InvokeTypes(198, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24058,7 +24058,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemNonInventoryMod
-    def AppendItemNonInventoryModRq(self) -> IItemNonInventoryMod:
+    def AppendItemNonInventoryModRq(self):
         'method AppendItemNonInventoryModRq'
         ret = self._oleobj_.InvokeTypes(197, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24066,7 +24066,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemNonInventoryQuery
-    def AppendItemNonInventoryQueryRq(self) -> IItemNonInventoryQuery:
+    def AppendItemNonInventoryQueryRq(self):
         'method AppendItemNonInventoryQueryRq'
         ret = self._oleobj_.InvokeTypes(217, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24074,7 +24074,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemOtherChargeAdd
-    def AppendItemOtherChargeAddRq(self) -> IItemOtherChargeAdd:
+    def AppendItemOtherChargeAddRq(self):
         'method AppendItemOtherChargeAddRq'
         ret = self._oleobj_.InvokeTypes(34, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24082,7 +24082,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemOtherChargeMod
-    def AppendItemOtherChargeModRq(self) -> IItemOtherChargeMod:
+    def AppendItemOtherChargeModRq(self):
         'method AppendItemOtherChargeModRq'
         ret = self._oleobj_.InvokeTypes(33, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24090,7 +24090,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemOtherChargeQuery
-    def AppendItemOtherChargeQueryRq(self) -> IItemOtherChargeQuery:
+    def AppendItemOtherChargeQueryRq(self):
         'method AppendItemOtherChargeQueryRq'
         ret = self._oleobj_.InvokeTypes(171, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24098,7 +24098,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemPaymentAdd
-    def AppendItemPaymentAddRq(self) -> IItemPaymentAdd:
+    def AppendItemPaymentAddRq(self):
         'method AppendItemPaymentAddRq'
         ret = self._oleobj_.InvokeTypes(212, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24106,7 +24106,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemPaymentMod
-    def AppendItemPaymentModRq(self) -> IItemPaymentMod:
+    def AppendItemPaymentModRq(self):
         'method AppendItemPaymentModRq'
         ret = self._oleobj_.InvokeTypes(211, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24114,7 +24114,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemPaymentQuery
-    def AppendItemPaymentQueryRq(self) -> IItemPaymentQuery:
+    def AppendItemPaymentQueryRq(self):
         'method AppendItemPaymentQueryRq'
         ret = self._oleobj_.InvokeTypes(100, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24122,7 +24122,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemQuery
-    def AppendItemQueryRq(self) -> IItemQuery:
+    def AppendItemQueryRq(self):
         'method AppendItemQueryRq'
         ret = self._oleobj_.InvokeTypes(207, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24130,7 +24130,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemReceiptAdd
-    def AppendItemReceiptAddRq(self) -> IItemReceiptAdd:
+    def AppendItemReceiptAddRq(self):
         'method AppendItemReceiptAddRq'
         ret = self._oleobj_.InvokeTypes(108, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24138,7 +24138,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemReceiptMod
-    def AppendItemReceiptModRq(self) -> IItemReceiptMod:
+    def AppendItemReceiptModRq(self):
         'method AppendItemReceiptModRq'
         ret = self._oleobj_.InvokeTypes(107, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24146,7 +24146,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemReceiptQuery
-    def AppendItemReceiptQueryRq(self) -> IItemReceiptQuery:
+    def AppendItemReceiptQueryRq(self):
         'method AppendItemReceiptQueryRq'
         ret = self._oleobj_.InvokeTypes(53, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24154,7 +24154,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemSalesTaxAdd
-    def AppendItemSalesTaxAddRq(self) -> IItemSalesTaxAdd:
+    def AppendItemSalesTaxAddRq(self):
         'method AppendItemSalesTaxAddRq'
         ret = self._oleobj_.InvokeTypes(170, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24162,7 +24162,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemSalesTaxGroupAdd
-    def AppendItemSalesTaxGroupAddRq(self) -> IItemSalesTaxGroupAdd:
+    def AppendItemSalesTaxGroupAddRq(self):
         'method AppendItemSalesTaxGroupAddRq'
         ret = self._oleobj_.InvokeTypes(119, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24170,7 +24170,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemSalesTaxGroupMod
-    def AppendItemSalesTaxGroupModRq(self) -> IItemSalesTaxGroupMod:
+    def AppendItemSalesTaxGroupModRq(self):
         'method AppendItemSalesTaxGroupModRq'
         ret = self._oleobj_.InvokeTypes(118, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24178,7 +24178,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemSalesTaxGroupQuery
-    def AppendItemSalesTaxGroupQueryRq(self) -> IItemSalesTaxGroupQuery:
+    def AppendItemSalesTaxGroupQueryRq(self):
         'method AppendItemSalesTaxGroupQueryRq'
         ret = self._oleobj_.InvokeTypes(141, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24186,7 +24186,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemSalesTaxMod
-    def AppendItemSalesTaxModRq(self) -> IItemSalesTaxMod:
+    def AppendItemSalesTaxModRq(self):
         'method AppendItemSalesTaxModRq'
         ret = self._oleobj_.InvokeTypes(169, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24194,7 +24194,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemSalesTaxQuery
-    def AppendItemSalesTaxQueryRq(self) -> IItemSalesTaxQuery:
+    def AppendItemSalesTaxQueryRq(self):
         'method AppendItemSalesTaxQueryRq'
         ret = self._oleobj_.InvokeTypes(126, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24202,7 +24202,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemServiceAdd
-    def AppendItemServiceAddRq(self) -> IItemServiceAdd:
+    def AppendItemServiceAddRq(self):
         'method AppendItemServiceAddRq'
         ret = self._oleobj_.InvokeTypes(73, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24210,7 +24210,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemServiceMod
-    def AppendItemServiceModRq(self) -> IItemServiceMod:
+    def AppendItemServiceModRq(self):
         'method AppendItemServiceModRq'
         ret = self._oleobj_.InvokeTypes(72, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24218,7 +24218,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemServiceQuery
-    def AppendItemServiceQueryRq(self) -> IItemServiceQuery:
+    def AppendItemServiceQueryRq(self):
         'method AppendItemServiceQueryRq'
         ret = self._oleobj_.InvokeTypes(37, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24226,7 +24226,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemSitesQuery
-    def AppendItemSitesQueryRq(self) -> IItemSitesQuery:
+    def AppendItemSitesQueryRq(self):
         'method AppendItemSitesQueryRq'
         ret = self._oleobj_.InvokeTypes(222, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24234,7 +24234,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemSubtotalAdd
-    def AppendItemSubtotalAddRq(self) -> IItemSubtotalAdd:
+    def AppendItemSubtotalAddRq(self):
         'method AppendItemSubtotalAddRq'
         ret = self._oleobj_.InvokeTypes(131, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24242,7 +24242,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemSubtotalMod
-    def AppendItemSubtotalModRq(self) -> IItemSubtotalMod:
+    def AppendItemSubtotalModRq(self):
         'method AppendItemSubtotalModRq'
         ret = self._oleobj_.InvokeTypes(130, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24250,7 +24250,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IItemSubtotalQuery
-    def AppendItemSubtotalQueryRq(self) -> IItemSubtotalQuery:
+    def AppendItemSubtotalQueryRq(self):
         'method AppendItemSubtotalQueryRq'
         ret = self._oleobj_.InvokeTypes(54, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24258,7 +24258,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IJobReportQuery
-    def AppendJobReportQueryRq(self) -> IJobReportQuery:
+    def AppendJobReportQueryRq(self):
         'method AppendJobReportQueryRq'
         ret = self._oleobj_.InvokeTypes(215, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24266,7 +24266,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IJobTypeAdd
-    def AppendJobTypeAddRq(self) -> IJobTypeAdd:
+    def AppendJobTypeAddRq(self):
         'method AppendJobTypeAddRq'
         ret = self._oleobj_.InvokeTypes(117, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24274,7 +24274,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IJobTypeQuery
-    def AppendJobTypeQueryRq(self) -> IJobTypeQuery:
+    def AppendJobTypeQueryRq(self):
         'method AppendJobTypeQueryRq'
         ret = self._oleobj_.InvokeTypes(214, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24282,7 +24282,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IJournalEntryAdd
-    def AppendJournalEntryAddRq(self) -> IJournalEntryAdd:
+    def AppendJournalEntryAddRq(self):
         'method AppendJournalEntryAddRq'
         ret = self._oleobj_.InvokeTypes(81, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24290,7 +24290,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IJournalEntryMod
-    def AppendJournalEntryModRq(self) -> IJournalEntryMod:
+    def AppendJournalEntryModRq(self):
         'method AppendJournalEntryModRq'
         ret = self._oleobj_.InvokeTypes(80, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24298,7 +24298,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IJournalEntryQuery
-    def AppendJournalEntryQueryRq(self) -> IJournalEntryQuery:
+    def AppendJournalEntryQueryRq(self):
         'method AppendJournalEntryQueryRq'
         ret = self._oleobj_.InvokeTypes(165, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24306,7 +24306,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ILeadAdd
-    def AppendLeadAddRq(self) -> ILeadAdd:
+    def AppendLeadAddRq(self):
         'method AppendLeadAddRq'
         ret = self._oleobj_.InvokeTypes(63, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24314,7 +24314,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ILeadMod
-    def AppendLeadModRq(self) -> ILeadMod:
+    def AppendLeadModRq(self):
         'method AppendLeadModRq'
         ret = self._oleobj_.InvokeTypes(62, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24322,7 +24322,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ILeadQuery
-    def AppendLeadQueryRq(self) -> ILeadQuery:
+    def AppendLeadQueryRq(self):
         'method AppendLeadQueryRq'
         ret = self._oleobj_.InvokeTypes(153, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24330,7 +24330,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IListDel
-    def AppendListDelRq(self) -> IListDel:
+    def AppendListDelRq(self):
         'method AppendListDelRq'
         ret = self._oleobj_.InvokeTypes(109, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24338,7 +24338,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IListDeletedQuery
-    def AppendListDeletedQueryRq(self) -> IListDeletedQuery:
+    def AppendListDeletedQueryRq(self):
         'method AppendListDeletedQueryRq'
         ret = self._oleobj_.InvokeTypes(76, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24346,7 +24346,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IListDisplayAdd
-    def AppendListDisplayAddRq(self) -> IListDisplayAdd:
+    def AppendListDisplayAddRq(self):
         'method AppendListDisplayAddRq'
         ret = self._oleobj_.InvokeTypes(147, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24354,7 +24354,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IListDisplayMod
-    def AppendListDisplayModRq(self) -> IListDisplayMod:
+    def AppendListDisplayModRq(self):
         'method AppendListDisplayModRq'
         ret = self._oleobj_.InvokeTypes(146, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24362,7 +24362,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IListMerge
-    def AppendListMergeRq(self) -> IListMerge:
+    def AppendListMergeRq(self):
         'method AppendListMergeRq'
         ret = self._oleobj_.InvokeTypes(187, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24370,7 +24370,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IOtherNameAdd
-    def AppendOtherNameAddRq(self) -> IOtherNameAdd:
+    def AppendOtherNameAddRq(self):
         'method AppendOtherNameAddRq'
         ret = self._oleobj_.InvokeTypes(91, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24378,7 +24378,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IOtherNameMod
-    def AppendOtherNameModRq(self) -> IOtherNameMod:
+    def AppendOtherNameModRq(self):
         'method AppendOtherNameModRq'
         ret = self._oleobj_.InvokeTypes(90, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24386,7 +24386,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IOtherNameQuery
-    def AppendOtherNameQueryRq(self) -> IOtherNameQuery:
+    def AppendOtherNameQueryRq(self):
         'method AppendOtherNameQueryRq'
         ret = self._oleobj_.InvokeTypes(20, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24394,7 +24394,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IPaymentMethodAdd
-    def AppendPaymentMethodAddRq(self) -> IPaymentMethodAdd:
+    def AppendPaymentMethodAddRq(self):
         'method AppendPaymentMethodAddRq'
         ret = self._oleobj_.InvokeTypes(101, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24402,7 +24402,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IPaymentMethodQuery
-    def AppendPaymentMethodQueryRq(self) -> IPaymentMethodQuery:
+    def AppendPaymentMethodQueryRq(self):
         'method AppendPaymentMethodQueryRq'
         ret = self._oleobj_.InvokeTypes(166, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24410,7 +24410,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IPayrollDetailReportQuery
-    def AppendPayrollDetailReportQueryRq(self) -> IPayrollDetailReportQuery:
+    def AppendPayrollDetailReportQueryRq(self):
         'method AppendPayrollDetailReportQueryRq'
         ret = self._oleobj_.InvokeTypes(23, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24418,7 +24418,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IPayrollItemNonWageQuery
-    def AppendPayrollItemNonWageQueryRq(self) -> IPayrollItemNonWageQuery:
+    def AppendPayrollItemNonWageQueryRq(self):
         'method AppendPayrollItemNonWageQueryRq'
         ret = self._oleobj_.InvokeTypes(44, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24426,7 +24426,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IPayrollItemWageAdd
-    def AppendPayrollItemWageAddRq(self) -> IPayrollItemWageAdd:
+    def AppendPayrollItemWageAddRq(self):
         'method AppendPayrollItemWageAddRq'
         ret = self._oleobj_.InvokeTypes(158, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24434,7 +24434,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IPayrollItemWageQuery
-    def AppendPayrollItemWageQueryRq(self) -> IPayrollItemWageQuery:
+    def AppendPayrollItemWageQueryRq(self):
         'method AppendPayrollItemWageQueryRq'
         ret = self._oleobj_.InvokeTypes(140, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24446,7 +24446,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return self._oleobj_.InvokeTypes(154, LCID, 1, (24, 0), (),)
 
     # Result is of type IPayrollSummaryReportQuery
-    def AppendPayrollSummaryReportQueryRq(self) -> IPayrollSummaryReportQuery:
+    def AppendPayrollSummaryReportQueryRq(self):
         'method AppendPayrollSummaryReportQueryRq'
         ret = self._oleobj_.InvokeTypes(82, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24454,7 +24454,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IPreferencesQuery
-    def AppendPreferencesQueryRq(self) -> IPreferencesQuery:
+    def AppendPreferencesQueryRq(self):
         'method AppendPreferencesQueryRq'
         ret = self._oleobj_.InvokeTypes(64, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24462,7 +24462,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IPriceLevelAdd
-    def AppendPriceLevelAddRq(self) -> IPriceLevelAdd:
+    def AppendPriceLevelAddRq(self):
         'method AppendPriceLevelAddRq'
         ret = self._oleobj_.InvokeTypes(235, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24470,7 +24470,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IPriceLevelMod
-    def AppendPriceLevelModRq(self) -> IPriceLevelMod:
+    def AppendPriceLevelModRq(self):
         'method AppendPriceLevelModRq'
         ret = self._oleobj_.InvokeTypes(234, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24478,7 +24478,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IPriceLevelQuery
-    def AppendPriceLevelQueryRq(self) -> IPriceLevelQuery:
+    def AppendPriceLevelQueryRq(self):
         'method AppendPriceLevelQueryRq'
         ret = self._oleobj_.InvokeTypes(114, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24486,7 +24486,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IPurchaseOrderAdd
-    def AppendPurchaseOrderAddRq(self) -> IPurchaseOrderAdd:
+    def AppendPurchaseOrderAddRq(self):
         'method AppendPurchaseOrderAddRq'
         ret = self._oleobj_.InvokeTypes(219, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24494,7 +24494,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IPurchaseOrderMod
-    def AppendPurchaseOrderModRq(self) -> IPurchaseOrderMod:
+    def AppendPurchaseOrderModRq(self):
         'method AppendPurchaseOrderModRq'
         ret = self._oleobj_.InvokeTypes(218, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24502,7 +24502,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IPurchaseOrderQuery
-    def AppendPurchaseOrderQueryRq(self) -> IPurchaseOrderQuery:
+    def AppendPurchaseOrderQueryRq(self):
         'method AppendPurchaseOrderQueryRq'
         ret = self._oleobj_.InvokeTypes(59, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24510,7 +24510,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IReceivePaymentAdd
-    def AppendReceivePaymentAddRq(self) -> IReceivePaymentAdd:
+    def AppendReceivePaymentAddRq(self):
         'method AppendReceivePaymentAddRq'
         ret = self._oleobj_.InvokeTypes(11, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24518,7 +24518,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IReceivePaymentMod
-    def AppendReceivePaymentModRq(self) -> IReceivePaymentMod:
+    def AppendReceivePaymentModRq(self):
         'method AppendReceivePaymentModRq'
         ret = self._oleobj_.InvokeTypes(10, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24526,7 +24526,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IReceivePaymentQuery
-    def AppendReceivePaymentQueryRq(self) -> IReceivePaymentQuery:
+    def AppendReceivePaymentQueryRq(self):
         'method AppendReceivePaymentQueryRq'
         ret = self._oleobj_.InvokeTypes(14, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24534,7 +24534,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IReceivePaymentToDepositQuery
-    def AppendReceivePaymentToDepositQueryRq(self) -> IReceivePaymentToDepositQuery:
+    def AppendReceivePaymentToDepositQueryRq(self):
         'method AppendReceivePaymentToDepositQueryRq'
         ret = self._oleobj_.InvokeTypes(43, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24542,7 +24542,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ISalesOrderAdd
-    def AppendSalesOrderAddRq(self) -> ISalesOrderAdd:
+    def AppendSalesOrderAddRq(self):
         'method AppendSalesOrderAddRq'
         ret = self._oleobj_.InvokeTypes(36, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24550,7 +24550,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ISalesOrderMod
-    def AppendSalesOrderModRq(self) -> ISalesOrderMod:
+    def AppendSalesOrderModRq(self):
         'method AppendSalesOrderModRq'
         ret = self._oleobj_.InvokeTypes(35, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24558,7 +24558,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ISalesOrderQuery
-    def AppendSalesOrderQueryRq(self) -> ISalesOrderQuery:
+    def AppendSalesOrderQueryRq(self):
         'method AppendSalesOrderQueryRq'
         ret = self._oleobj_.InvokeTypes(74, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24566,7 +24566,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ISalesReceiptAdd
-    def AppendSalesReceiptAddRq(self) -> ISalesReceiptAdd:
+    def AppendSalesReceiptAddRq(self):
         'method AppendSalesReceiptAddRq'
         ret = self._oleobj_.InvokeTypes(133, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24574,7 +24574,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ISalesReceiptMod
-    def AppendSalesReceiptModRq(self) -> ISalesReceiptMod:
+    def AppendSalesReceiptModRq(self):
         'method AppendSalesReceiptModRq'
         ret = self._oleobj_.InvokeTypes(115, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24582,7 +24582,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ISalesReceiptQuery
-    def AppendSalesReceiptQueryRq(self) -> ISalesReceiptQuery:
+    def AppendSalesReceiptQueryRq(self):
         'method AppendSalesReceiptQueryRq'
         ret = self._oleobj_.InvokeTypes(28, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24590,7 +24590,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ISalesRepAdd
-    def AppendSalesRepAddRq(self) -> ISalesRepAdd:
+    def AppendSalesRepAddRq(self):
         'method AppendSalesRepAddRq'
         ret = self._oleobj_.InvokeTypes(99, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24598,7 +24598,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ISalesRepMod
-    def AppendSalesRepModRq(self) -> ISalesRepMod:
+    def AppendSalesRepModRq(self):
         'method AppendSalesRepModRq'
         ret = self._oleobj_.InvokeTypes(98, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24606,7 +24606,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ISalesRepQuery
-    def AppendSalesRepQueryRq(self) -> ISalesRepQuery:
+    def AppendSalesRepQueryRq(self):
         'method AppendSalesRepQueryRq'
         ret = self._oleobj_.InvokeTypes(75, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24614,7 +24614,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ISalesTaxCodeAdd
-    def AppendSalesTaxCodeAddRq(self) -> ISalesTaxCodeAdd:
+    def AppendSalesTaxCodeAddRq(self):
         'method AppendSalesTaxCodeAddRq'
         ret = self._oleobj_.InvokeTypes(71, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24622,7 +24622,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ISalesTaxCodeMod
-    def AppendSalesTaxCodeModRq(self) -> ISalesTaxCodeMod:
+    def AppendSalesTaxCodeModRq(self):
         'method AppendSalesTaxCodeModRq'
         ret = self._oleobj_.InvokeTypes(70, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24630,7 +24630,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ISalesTaxCodeQuery
-    def AppendSalesTaxCodeQueryRq(self) -> ISalesTaxCodeQuery:
+    def AppendSalesTaxCodeQueryRq(self):
         'method AppendSalesTaxCodeQueryRq'
         ret = self._oleobj_.InvokeTypes(162, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24638,7 +24638,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ISalesTaxPayableQuery
-    def AppendSalesTaxPayableQueryRq(self) -> ISalesTaxPayableQuery:
+    def AppendSalesTaxPayableQueryRq(self):
         'method AppendSalesTaxPayableQueryRq'
         ret = self._oleobj_.InvokeTypes(223, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24646,7 +24646,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ISalesTaxPaymentCheckAdd
-    def AppendSalesTaxPaymentCheckAddRq(self) -> ISalesTaxPaymentCheckAdd:
+    def AppendSalesTaxPaymentCheckAddRq(self):
         'method AppendSalesTaxPaymentCheckAddRq'
         ret = self._oleobj_.InvokeTypes(186, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24654,7 +24654,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ISalesTaxPaymentCheckMod
-    def AppendSalesTaxPaymentCheckModRq(self) -> ISalesTaxPaymentCheckMod:
+    def AppendSalesTaxPaymentCheckModRq(self):
         'method AppendSalesTaxPaymentCheckModRq'
         ret = self._oleobj_.InvokeTypes(185, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24662,7 +24662,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ISalesTaxPaymentCheckQuery
-    def AppendSalesTaxPaymentCheckQueryRq(self) -> ISalesTaxPaymentCheckQuery:
+    def AppendSalesTaxPaymentCheckQueryRq(self):
         'method AppendSalesTaxPaymentCheckQueryRq'
         ret = self._oleobj_.InvokeTypes(192, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24670,7 +24670,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ISalesTaxReturnLineQuery
-    def AppendSalesTaxReturnLineQueryRq(self) -> ISalesTaxReturnLineQuery:
+    def AppendSalesTaxReturnLineQueryRq(self):
         'method AppendSalesTaxReturnLineQueryRq'
         ret = self._oleobj_.InvokeTypes(121, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24682,7 +24682,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return self._oleobj_.InvokeTypes(24, LCID, 1, (24, 0), (),)
 
     # Result is of type IShipMethodAdd
-    def AppendShipMethodAddRq(self) -> IShipMethodAdd:
+    def AppendShipMethodAddRq(self):
         'method AppendShipMethodAddRq'
         ret = self._oleobj_.InvokeTypes(206, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24690,7 +24690,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IShipMethodQuery
-    def AppendShipMethodQueryRq(self) -> IShipMethodQuery:
+    def AppendShipMethodQueryRq(self):
         'method AppendShipMethodQueryRq'
         ret = self._oleobj_.InvokeTypes(194, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24698,7 +24698,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ISpecialAccountAdd
-    def AppendSpecialAccountAddRq(self) -> ISpecialAccountAdd:
+    def AppendSpecialAccountAddRq(self):
         'method AppendSpecialAccountAddRq'
         ret = self._oleobj_.InvokeTypes(209, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24706,7 +24706,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ISpecialItemAdd
-    def AppendSpecialItemAddRq(self) -> ISpecialItemAdd:
+    def AppendSpecialItemAddRq(self):
         'method AppendSpecialItemAddRq'
         ret = self._oleobj_.InvokeTypes(159, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24714,7 +24714,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IStandardTermsAdd
-    def AppendStandardTermsAddRq(self) -> IStandardTermsAdd:
+    def AppendStandardTermsAddRq(self):
         'method AppendStandardTermsAddRq'
         ret = self._oleobj_.InvokeTypes(181, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24722,7 +24722,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IStandardTermsQuery
-    def AppendStandardTermsQueryRq(self) -> IStandardTermsQuery:
+    def AppendStandardTermsQueryRq(self):
         'method AppendStandardTermsQueryRq'
         ret = self._oleobj_.InvokeTypes(47, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24730,7 +24730,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ITemplateQuery
-    def AppendTemplateQueryRq(self) -> ITemplateQuery:
+    def AppendTemplateQueryRq(self):
         'method AppendTemplateQueryRq'
         ret = self._oleobj_.InvokeTypes(113, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24738,7 +24738,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ITermsQuery
-    def AppendTermsQueryRq(self) -> ITermsQuery:
+    def AppendTermsQueryRq(self):
         'method AppendTermsQueryRq'
         ret = self._oleobj_.InvokeTypes(152, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24746,7 +24746,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ITimeReportQuery
-    def AppendTimeReportQueryRq(self) -> ITimeReportQuery:
+    def AppendTimeReportQueryRq(self):
         'method AppendTimeReportQueryRq'
         ret = self._oleobj_.InvokeTypes(196, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24754,7 +24754,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ITimeTrackingAdd
-    def AppendTimeTrackingAddRq(self) -> ITimeTrackingAdd:
+    def AppendTimeTrackingAddRq(self):
         'method AppendTimeTrackingAddRq'
         ret = self._oleobj_.InvokeTypes(46, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24762,7 +24762,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ITimeTrackingMod
-    def AppendTimeTrackingModRq(self) -> ITimeTrackingMod:
+    def AppendTimeTrackingModRq(self):
         'method AppendTimeTrackingModRq'
         ret = self._oleobj_.InvokeTypes(45, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24770,7 +24770,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ITimeTrackingQuery
-    def AppendTimeTrackingQueryRq(self) -> ITimeTrackingQuery:
+    def AppendTimeTrackingQueryRq(self):
         'method AppendTimeTrackingQueryRq'
         ret = self._oleobj_.InvokeTypes(175, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24778,7 +24778,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IToDoAdd
-    def AppendToDoAddRq(self) -> IToDoAdd:
+    def AppendToDoAddRq(self):
         'method AppendToDoAddRq'
         ret = self._oleobj_.InvokeTypes(96, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24786,7 +24786,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IToDoMod
-    def AppendToDoModRq(self) -> IToDoMod:
+    def AppendToDoModRq(self):
         'method AppendToDoModRq'
         ret = self._oleobj_.InvokeTypes(78, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24794,7 +24794,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IToDoQuery
-    def AppendToDoQueryRq(self) -> IToDoQuery:
+    def AppendToDoQueryRq(self):
         'method AppendToDoQueryRq'
         ret = self._oleobj_.InvokeTypes(15, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24802,7 +24802,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ITransactionQuery
-    def AppendTransactionQueryRq(self) -> ITransactionQuery:
+    def AppendTransactionQueryRq(self):
         'method AppendTransactionQueryRq'
         ret = self._oleobj_.InvokeTypes(139, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24810,7 +24810,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ITransferAdd
-    def AppendTransferAddRq(self) -> ITransferAdd:
+    def AppendTransferAddRq(self):
         'method AppendTransferAddRq'
         ret = self._oleobj_.InvokeTypes(225, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24818,7 +24818,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ITransferInventoryAdd
-    def AppendTransferInventoryAddRq(self) -> ITransferInventoryAdd:
+    def AppendTransferInventoryAddRq(self):
         'method AppendTransferInventoryAddRq'
         ret = self._oleobj_.InvokeTypes(179, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24826,7 +24826,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ITransferInventoryMod
-    def AppendTransferInventoryModRq(self) -> ITransferInventoryMod:
+    def AppendTransferInventoryModRq(self):
         'method AppendTransferInventoryModRq'
         ret = self._oleobj_.InvokeTypes(178, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24834,7 +24834,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ITransferInventoryQuery
-    def AppendTransferInventoryQueryRq(self) -> ITransferInventoryQuery:
+    def AppendTransferInventoryQueryRq(self):
         'method AppendTransferInventoryQueryRq'
         ret = self._oleobj_.InvokeTypes(227, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24842,7 +24842,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ITransferMod
-    def AppendTransferModRq(self) -> ITransferMod:
+    def AppendTransferModRq(self):
         'method AppendTransferModRq'
         ret = self._oleobj_.InvokeTypes(224, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24850,7 +24850,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ITransferQuery
-    def AppendTransferQueryRq(self) -> ITransferQuery:
+    def AppendTransferQueryRq(self):
         'method AppendTransferQueryRq'
         ret = self._oleobj_.InvokeTypes(168, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24858,7 +24858,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ITxnDel
-    def AppendTxnDelRq(self) -> ITxnDel:
+    def AppendTxnDelRq(self):
         'method AppendTxnDelRq'
         ret = self._oleobj_.InvokeTypes(167, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24866,7 +24866,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ITxnDeletedQuery
-    def AppendTxnDeletedQueryRq(self) -> ITxnDeletedQuery:
+    def AppendTxnDeletedQueryRq(self):
         'method AppendTxnDeletedQueryRq'
         ret = self._oleobj_.InvokeTypes(116, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24874,7 +24874,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ITxnDisplayAdd
-    def AppendTxnDisplayAddRq(self) -> ITxnDisplayAdd:
+    def AppendTxnDisplayAddRq(self):
         'method AppendTxnDisplayAddRq'
         ret = self._oleobj_.InvokeTypes(93, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24882,7 +24882,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ITxnDisplayMod
-    def AppendTxnDisplayModRq(self) -> ITxnDisplayMod:
+    def AppendTxnDisplayModRq(self):
         'method AppendTxnDisplayModRq'
         ret = self._oleobj_.InvokeTypes(92, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24890,7 +24890,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type ITxnVoid
-    def AppendTxnVoidRq(self) -> ITxnVoid:
+    def AppendTxnVoidRq(self):
         'method AppendTxnVoidRq'
         ret = self._oleobj_.InvokeTypes(182, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24898,7 +24898,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IUnitOfMeasureSetAdd
-    def AppendUnitOfMeasureSetAddRq(self) -> IUnitOfMeasureSetAdd:
+    def AppendUnitOfMeasureSetAddRq(self):
         'method AppendUnitOfMeasureSetAddRq'
         ret = self._oleobj_.InvokeTypes(202, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24906,7 +24906,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IUnitOfMeasureSetQuery
-    def AppendUnitOfMeasureSetQueryRq(self) -> IUnitOfMeasureSetQuery:
+    def AppendUnitOfMeasureSetQueryRq(self):
         'method AppendUnitOfMeasureSetQueryRq'
         ret = self._oleobj_.InvokeTypes(77, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24914,7 +24914,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IVehicleAdd
-    def AppendVehicleAddRq(self) -> IVehicleAdd:
+    def AppendVehicleAddRq(self):
         'method AppendVehicleAddRq'
         ret = self._oleobj_.InvokeTypes(86, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24922,7 +24922,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IVehicleMileageAdd
-    def AppendVehicleMileageAddRq(self) -> IVehicleMileageAdd:
+    def AppendVehicleMileageAddRq(self):
         'method AppendVehicleMileageAddRq'
         ret = self._oleobj_.InvokeTypes(19, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24930,7 +24930,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IVehicleMileageQuery
-    def AppendVehicleMileageQueryRq(self) -> IVehicleMileageQuery:
+    def AppendVehicleMileageQueryRq(self):
         'method AppendVehicleMileageQueryRq'
         ret = self._oleobj_.InvokeTypes(160, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24938,7 +24938,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IVehicleMod
-    def AppendVehicleModRq(self) -> IVehicleMod:
+    def AppendVehicleModRq(self):
         'method AppendVehicleModRq'
         ret = self._oleobj_.InvokeTypes(85, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24946,7 +24946,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IVehicleQuery
-    def AppendVehicleQueryRq(self) -> IVehicleQuery:
+    def AppendVehicleQueryRq(self):
         'method AppendVehicleQueryRq'
         ret = self._oleobj_.InvokeTypes(129, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24954,7 +24954,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IVendorAdd
-    def AppendVendorAddRq(self) -> IVendorAdd:
+    def AppendVendorAddRq(self):
         'method AppendVendorAddRq'
         ret = self._oleobj_.InvokeTypes(233, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24962,7 +24962,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IVendorCreditAdd
-    def AppendVendorCreditAddRq(self) -> IVendorCreditAdd:
+    def AppendVendorCreditAddRq(self):
         'method AppendVendorCreditAddRq'
         ret = self._oleobj_.InvokeTypes(61, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24970,7 +24970,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IVendorCreditMod
-    def AppendVendorCreditModRq(self) -> IVendorCreditMod:
+    def AppendVendorCreditModRq(self):
         'method AppendVendorCreditModRq'
         ret = self._oleobj_.InvokeTypes(60, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24978,7 +24978,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IVendorCreditQuery
-    def AppendVendorCreditQueryRq(self) -> IVendorCreditQuery:
+    def AppendVendorCreditQueryRq(self):
         'method AppendVendorCreditQueryRq'
         ret = self._oleobj_.InvokeTypes(52, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24986,7 +24986,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IVendorMod
-    def AppendVendorModRq(self) -> IVendorMod:
+    def AppendVendorModRq(self):
         'method AppendVendorModRq'
         ret = self._oleobj_.InvokeTypes(232, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24994,7 +24994,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IVendorQuery
-    def AppendVendorQueryRq(self) -> IVendorQuery:
+    def AppendVendorQueryRq(self):
         'method AppendVendorQueryRq'
         ret = self._oleobj_.InvokeTypes(29, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -25002,7 +25002,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IVendorTypeAdd
-    def AppendVendorTypeAddRq(self) -> IVendorTypeAdd:
+    def AppendVendorTypeAddRq(self):
         'method AppendVendorTypeAddRq'
         ret = self._oleobj_.InvokeTypes(49, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -25010,7 +25010,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IVendorTypeQuery
-    def AppendVendorTypeQueryRq(self) -> IVendorTypeQuery:
+    def AppendVendorTypeQueryRq(self):
         'method AppendVendorTypeQueryRq'
         ret = self._oleobj_.InvokeTypes(40, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -25018,7 +25018,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IWorkersCompCodeAdd
-    def AppendWorkersCompCodeAddRq(self) -> IWorkersCompCodeAdd:
+    def AppendWorkersCompCodeAddRq(self):
         'method AppendWorkersCompCodeAddRq'
         ret = self._oleobj_.InvokeTypes(238, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -25026,7 +25026,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IWorkersCompCodeMod
-    def AppendWorkersCompCodeModRq(self) -> IWorkersCompCodeMod:
+    def AppendWorkersCompCodeModRq(self):
         'method AppendWorkersCompCodeModRq'
         ret = self._oleobj_.InvokeTypes(237, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -25034,7 +25034,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IWorkersCompCodeQuery
-    def AppendWorkersCompCodeQueryRq(self) -> IWorkersCompCodeQuery:
+    def AppendWorkersCompCodeQueryRq(self):
         'method AppendWorkersCompCodeQueryRq'
         ret = self._oleobj_.InvokeTypes(38, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -40324,7 +40324,7 @@ class IQBSessionManager(DispatchBaseClass):
         return ret
 
     # Result is of type IMsgSetResponse
-    def DoRequests(self, request: IMsgSetRequest) -> IMsgSetResponse:
+    def DoRequests(self, request: IMsgSetRequest):
         'method DoRequests'
         ret = self._oleobj_.InvokeTypes(8, LCID, 1, (9, 0), ((9, 0),),request
             )
