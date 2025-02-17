@@ -154,9 +154,9 @@ def ProcessTransactions(
     count = 0
     for trans in transactions:
         if reimbursement:
-            trnsDate = datetime.strptime(trans["Expense Date"], "%d/%m/%y")
+            trnsDate = datetime.strptime(trans["Expense Date"], "%d/%m/%Y")
         else:
-            trnsDate = datetime.strptime(trans["Expense Date"], "%y-%m-%d")
+            trnsDate = datetime.strptime(trans["Expense Date"], "%Y-%m-%d")
 
         trnsDesc = trans["Description"].strip()
         trnsMerch = trans[payeeNameField]
