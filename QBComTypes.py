@@ -7,7 +7,7 @@
 makepy_version = '0.5.01'
 python_version = 0x30b09f0
 
-from enum import Enum
+from enum import IntEnum
 from typing import Iterator
 
 import win32com.client.CLSIDToClass, pythoncom, pywintypes
@@ -3455,13 +3455,13 @@ class constants:
     rtvendorType                  =23         # from enum ENrowType
 
 
-class ENOpenMode(Enum):
+class ENOpenMode(IntEnum):
     omDontCare                    =2
     omMultiUser                   =1
     omSingleUser                  =0
 
 
-class ENResponseType(Enum):
+class ENResponseType(IntEnum):
     rtARRefundCreditCardAddRq     =1390
     rtARRefundCreditCardAddRs     =1397
     rtARRefundCreditCardQueryRq   =1386
