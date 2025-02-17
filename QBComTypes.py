@@ -12,7 +12,7 @@ from typing import Iterator
 import win32com.client.CLSIDToClass, pythoncom, pywintypes
 import win32com.client.util
 from pywintypes import IID
-from win32com.client import Dispatch
+from win32com.client import CDispatch, Dispatch
 
 # The following 3 lines may need tweaking for the particular server
 # Candidates are pythoncom.Missing, .Empty and .ArgNotFound
@@ -12157,13 +12157,11 @@ class IDepositLineRetList(DispatchBaseClass):
     }
     _prop_map_put_ = {
     }
-    def __iter__(self):
+    def __iter__(self) -> Iterator[IDepositLineRet]:
         "Return a Python iterator for this object"
-        try:
-            ob = self._oleobj_.InvokeTypes(-4,LCID,3,(13, 10),())
-        except pythoncom.error:
-            raise TypeError("This object does not support enumeration")
-        return win32com.client.util.Iterator(ob, None)
+        for i in range(len(self)):
+            yield self.GetAt(i)
+
     #This class has Count() property - allow len(ob) to provide this
     def __len__(self):
         return self._ApplyTypes_(*(5, 2, (3, 0), (), "Count", None))
@@ -14896,13 +14894,11 @@ class IExpenseLineRetList(DispatchBaseClass):
     }
     _prop_map_put_ = {
     }
-    def __iter__(self):
+    def __iter__(self) -> Iterator[IExpenseLineRet]:
         "Return a Python iterator for this object"
-        try:
-            ob = self._oleobj_.InvokeTypes(-4,LCID,3,(13, 10),())
-        except pythoncom.error:
-            raise TypeError("This object does not support enumeration")
-        return win32com.client.util.Iterator(ob, None)
+
+        for i in range(len(self)):
+            yield self.GetAt(i)
     #This class has Count() property - allow len(ob) to provide this
     def __len__(self):
         return self._ApplyTypes_(*(5, 2, (3, 0), (), "Count", None))
@@ -39765,6 +39761,21 @@ class IQBSessionManager(DispatchBaseClass):
     CLSID = IID('{0A00FF82-028E-4BCA-A278-C6BF2553DC18}')
     coclass_clsid = IID('{51271FB0-43CE-46C0-97E0-F1205E99C594}')
 
+    def __init__(self, sessionManager: CDispatch | None = None) -> None:
+        if sessionManager is None:
+            sessionManager = win32com.client.Dispatch("QBFC16.QBSessionManager")
+
+        super().__init__(sessionManager)
+
+    def __enter__(self) -> "IQBSessionManager":
+        self.OpenConnection("", "Test App")
+        self.BeginSession("", constants.omDontCare)
+        return self
+
+    def __exit__(self, exc_type, exc_value, exc_traceback):
+        self.EndSession()
+        self.CloseConnection()
+
     def BeginSession(self, qbFile=defaultNamedNotOptArg, openMode=defaultNamedNotOptArg):
         'method BeginSession'
         return self._oleobj_.InvokeTypes(2, LCID, 1, (24, 0), ((8, 0), (3, 0)),qbFile
@@ -39807,7 +39818,7 @@ class IQBSessionManager(DispatchBaseClass):
         return ret
 
     # Result is of type IMsgSetResponse
-    def DoRequests(self, request=defaultNamedNotOptArg):
+    def DoRequests(self, request: IMsgSetRequest):
         'method DoRequests'
         ret = self._oleobj_.InvokeTypes(8, LCID, 1, (9, 0), ((9, 0),),request
             )
@@ -41212,11 +41223,11 @@ class IResponseList(DispatchBaseClass):
     }
     _prop_map_put_ = {
     }
-    def __iter__(self):
+    def __iter__(self) -> Iterator[IResponse]:
         "Return a Python iterator for this object"
-        for x in range(len(self)): 
+        for x in range(len(self)):
             yield self.GetAt(x)
-            
+
     #This class has Count() property - allow len(ob) to provide this
     def __len__(self):
         return self._ApplyTypes_(*(2, 2, (3, 0), (), "Count", None))
@@ -49059,7 +49070,7 @@ class IVendorRetList(DispatchBaseClass):
     }
     def __iter__(self) -> Iterator[IVendorRet]:
         "Return a Python iterator for this object"
-        for x in range(len(self)): 
+        for x in range(len(self)):
             yield self.GetAt(x)
     #This class has Count() property - allow len(ob) to provide this
     def __len__(self):
@@ -49517,7 +49528,7 @@ IARRefundCreditCardRet_vtables_ = [
 
 IARRefundCreditCardRetList_vtables_dispatch_ = 1
 IARRefundCreditCardRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380739-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380739-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -49619,7 +49630,7 @@ IAccountRet_vtables_ = [
 
 IAccountRetList_vtables_dispatch_ = 1
 IAccountRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380466-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380466-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -49633,7 +49644,7 @@ IAccountTaxLineInfoRet_vtables_ = [
 
 IAccountTaxLineInfoRetList_vtables_dispatch_ = 1
 IAccountTaxLineInfoRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F381007-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F381007-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -49663,7 +49674,7 @@ IAdditionalNotes_vtables_ = [
 
 IAdditionalNotesList_vtables_dispatch_ = 1
 IAdditionalNotesList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380865-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380865-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -49677,7 +49688,7 @@ IAdditionalNotesMod_vtables_ = [
 
 IAdditionalNotesModList_vtables_dispatch_ = 1
 IAdditionalNotesModList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380930-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380930-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -49692,7 +49703,7 @@ IAdditionalNotesRet_vtables_ = [
 
 IAdditionalNotesRetList_vtables_dispatch_ = 1
 IAdditionalNotesRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380948-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380948-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -49752,7 +49763,7 @@ IAppliedToTxnAdd_vtables_ = [
 
 IAppliedToTxnAddList_vtables_dispatch_ = 1
 IAppliedToTxnAddList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380927-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380927-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -49770,7 +49781,7 @@ IAppliedToTxnMod_vtables_ = [
 
 IAppliedToTxnModList_vtables_dispatch_ = 1
 IAppliedToTxnModList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380503-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380503-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -49793,7 +49804,7 @@ IAppliedToTxnRet_vtables_ = [
 
 IAppliedToTxnRetList_vtables_dispatch_ = 1
 IAppliedToTxnRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380542-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380542-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -49807,7 +49818,7 @@ IApplyCheckToTxnAdd_vtables_ = [
 
 IApplyCheckToTxnAddList_vtables_dispatch_ = 1
 IApplyCheckToTxnAddList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380465-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380465-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -49821,7 +49832,7 @@ IApplyCheckToTxnMod_vtables_ = [
 
 IApplyCheckToTxnModList_vtables_dispatch_ = 1
 IApplyCheckToTxnModList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380649-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380649-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -49849,10 +49860,10 @@ IBSTRList_vtables_dispatch_ = 1
 IBSTRList_vtables_ = [
     (( 'Add' , 'addValue' , ), 4, (4, (), [ (8, 0, None, None) , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
-    (( 'GetAt' , 'index' , 'retVal' , ), 6, (6, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 6, (6, (), [ (3, 0, None, None) ,
              (16392, 10, None, None) , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
     (( 'GetMaxLength' , 'pVal' , ), 7, (7, (), [ (16392, 10, None, None) , ], 1 , 1 , 4 , 0 , 88 , (3, 0, None, None) , 0 , )),
-    (( 'GetMaxLengthByEdition' , 'qbEdition' , 'pVal' , ), 8, (8, (), [ (3, 0, None, None) , 
+    (( 'GetMaxLengthByEdition' , 'qbEdition' , 'pVal' , ), 8, (8, (), [ (3, 0, None, None) ,
              (16392, 10, None, None) , ], 1 , 1 , 4 , 0 , 96 , (3, 0, None, None) , 0 , )),
 ]
 
@@ -49880,7 +49891,7 @@ IBarCodeRet_vtables_ = [
 
 IBarCodeRetList_vtables_dispatch_ = 1
 IBarCodeRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380916-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380916-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -50021,7 +50032,7 @@ IBillPaymentCheckRet_vtables_ = [
 
 IBillPaymentCheckRetList_vtables_dispatch_ = 1
 IBillPaymentCheckRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380758-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380758-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -50077,7 +50088,7 @@ IBillPaymentCreditCardRet_vtables_ = [
 
 IBillPaymentCreditCardRetList_vtables_dispatch_ = 1
 IBillPaymentCreditCardRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380884-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380884-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -50128,7 +50139,7 @@ IBillRet_vtables_ = [
 
 IBillRetList_vtables_dispatch_ = 1
 IBillRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380505-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380505-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -50165,7 +50176,7 @@ IBillToPayRet_vtables_ = [
 
 IBillToPayRetList_vtables_dispatch_ = 1
 IBillToPayRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380933-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380933-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -50206,7 +50217,7 @@ IBillingRatePerItem_vtables_ = [
 
 IBillingRatePerItemList_vtables_dispatch_ = 1
 IBillingRatePerItemList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380990-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380990-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -50220,7 +50231,7 @@ IBillingRatePerItemRet_vtables_ = [
 
 IBillingRatePerItemRetList_vtables_dispatch_ = 1
 IBillingRatePerItemRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380769-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380769-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -50246,7 +50257,7 @@ IBillingRateRet_vtables_ = [
 
 IBillingRateRetList_vtables_dispatch_ = 1
 IBillingRateRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380554-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380554-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -50345,7 +50356,7 @@ IBuildAssemblyRet_vtables_ = [
 
 IBuildAssemblyRetList_vtables_dispatch_ = 1
 IBuildAssemblyRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380504-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380504-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -50389,7 +50400,7 @@ ICategoryAccountMapping_vtables_ = [
 
 ICategoryAccountMappingList_vtables_dispatch_ = 1
 ICategoryAccountMappingList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380969-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380969-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -50404,7 +50415,7 @@ ICategoryAccountMappingMod_vtables_ = [
 
 ICategoryAccountMappingModList_vtables_dispatch_ = 1
 ICategoryAccountMappingModList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380972-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380972-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -50512,7 +50523,7 @@ IChargeRet_vtables_ = [
 
 IChargeRetList_vtables_dispatch_ = 1
 IChargeRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380614-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380614-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -50603,7 +50614,7 @@ ICheckRet_vtables_ = [
 
 ICheckRetList_vtables_dispatch_ = 1
 ICheckRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380686-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380686-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -50659,7 +50670,7 @@ IClassRet_vtables_ = [
 
 IClassRetList_vtables_dispatch_ = 1
 IClassRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380803-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380803-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -50681,7 +50692,7 @@ IColData_vtables_ = [
 
 IColDataList_vtables_dispatch_ = 1
 IColDataList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380509-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380509-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -50697,7 +50708,7 @@ IColDesc_vtables_ = [
 
 IColDescList_vtables_dispatch_ = 1
 IColDescList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380814-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380814-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -50711,7 +50722,7 @@ IColTitle_vtables_ = [
 
 IColTitleList_vtables_dispatch_ = 1
 IColTitleList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380692-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380692-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -50786,7 +50797,7 @@ IComponentItemLineRet_vtables_ = [
 
 IComponentItemLineRetList_vtables_dispatch_ = 1
 IComponentItemLineRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380685-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380685-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -50804,7 +50815,7 @@ IContacts_vtables_ = [
 
 IContactsList_vtables_dispatch_ = 1
 IContactsList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380879-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380879-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -50824,7 +50835,7 @@ IContactsMod_vtables_ = [
 
 IContactsModList_vtables_dispatch_ = 1
 IContactsModList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380662-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380662-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -50847,7 +50858,7 @@ IContactsRet_vtables_ = [
 
 IContactsRetList_vtables_dispatch_ = 1
 IContactsRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380697-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380697-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -50926,7 +50937,7 @@ ICreditCardChargeRet_vtables_ = [
 
 ICreditCardChargeRetList_vtables_dispatch_ = 1
 ICreditCardChargeRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380979-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380979-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -51005,7 +51016,7 @@ ICreditCardCreditRet_vtables_ = [
 
 ICreditCardCreditRetList_vtables_dispatch_ = 1
 ICreditCardCreditRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380698-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380698-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -51216,7 +51227,7 @@ ICreditMemoLineMod_vtables_ = [
 
 ICreditMemoLineModList_vtables_dispatch_ = 1
 ICreditMemoLineModList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380711-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380711-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -51249,7 +51260,7 @@ ICreditMemoLineRet_vtables_ = [
 
 ICreditMemoLineRetList_vtables_dispatch_ = 1
 ICreditMemoLineRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380752-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380752-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -51352,7 +51363,7 @@ ICreditMemoRet_vtables_ = [
 
 ICreditMemoRetList_vtables_dispatch_ = 1
 ICreditMemoRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380983-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380983-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -51435,7 +51446,7 @@ ICurrencyRet_vtables_ = [
 
 ICurrencyRetList_vtables_dispatch_ = 1
 ICurrencyRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380943-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380943-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -51655,7 +51666,7 @@ ICustomerMsgRet_vtables_ = [
 
 ICustomerMsgRetList_vtables_dispatch_ = 1
 ICustomerMsgRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380864-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380864-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -51740,7 +51751,7 @@ ICustomerRet_vtables_ = [
 
 ICustomerRetList_vtables_dispatch_ = 1
 ICustomerRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380518-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380518-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -51781,7 +51792,7 @@ ICustomerTypeRet_vtables_ = [
 
 ICustomerTypeRetList_vtables_dispatch_ = 1
 ICustomerTypeRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F381014-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F381014-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -51799,7 +51810,7 @@ IDataEvent_vtables_ = [
 
 IDataEventList_vtables_dispatch_ = 1
 IDataEventList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380575-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380575-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -51924,7 +51935,7 @@ IDataExtDefRet_vtables_ = [
 
 IDataExtDefRetList_vtables_dispatch_ = 1
 IDataExtDefRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380595-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380595-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -51947,7 +51958,7 @@ IDataExtDelRet_vtables_ = [
 
 IDataExtList_vtables_dispatch_ = 1
 IDataExtList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380482-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380482-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -51971,7 +51982,7 @@ IDataExtRet_vtables_ = [
 
 IDataExtRetList_vtables_dispatch_ = 1
 IDataExtRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380646-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380646-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -52018,7 +52029,7 @@ IDateDrivenTermsRet_vtables_ = [
 
 IDateDrivenTermsRetList_vtables_dispatch_ = 1
 IDateDrivenTermsRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380977-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380977-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -52032,7 +52043,7 @@ IDefaultUnit_vtables_ = [
 
 IDefaultUnitList_vtables_dispatch_ = 1
 IDefaultUnitList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380491-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380491-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -52097,7 +52108,7 @@ IDepositLineAdd_vtables_ = [
 
 IDepositLineAddList_vtables_dispatch_ = 1
 IDepositLineAddList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380589-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380589-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -52111,7 +52122,7 @@ IDepositLineMod_vtables_ = [
 
 IDepositLineModList_vtables_dispatch_ = 1
 IDepositLineModList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380757-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380757-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -52134,7 +52145,7 @@ IDepositLineRet_vtables_ = [
 
 IDepositLineRetList_vtables_dispatch_ = 1
 IDepositLineRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380787-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380787-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -52187,7 +52198,7 @@ IDepositRet_vtables_ = [
 
 IDepositRetList_vtables_dispatch_ = 1
 IDepositRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380569-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380569-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -52219,10 +52230,10 @@ IENAccountTypeList_vtables_dispatch_ = 1
 IENAccountTypeList_vtables_ = [
     (( 'Add' , 'addValue' , ), 4, (4, (), [ (3, 0, None, None) , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
-    (( 'GetAt' , 'index' , 'retVal' , ), 6, (6, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 6, (6, (), [ (3, 0, None, None) ,
              (16387, 10, None, None) , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
     (( 'AddAsString' , 'addValue' , ), 7, (7, (), [ (8, 0, None, None) , ], 1 , 1 , 4 , 0 , 88 , (3, 0, None, None) , 0 , )),
-    (( 'GetAtAsString' , 'index' , 'retVal' , ), 8, (8, (), [ (3, 0, None, None) , 
+    (( 'GetAtAsString' , 'index' , 'retVal' , ), 8, (8, (), [ (3, 0, None, None) ,
              (16392, 10, None, None) , ], 1 , 1 , 4 , 0 , 96 , (3, 0, None, None) , 0 , )),
 ]
 
@@ -52230,10 +52241,10 @@ IENAssignToObjectList_vtables_dispatch_ = 1
 IENAssignToObjectList_vtables_ = [
     (( 'Add' , 'addValue' , ), 4, (4, (), [ (3, 0, None, None) , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
-    (( 'GetAt' , 'index' , 'retVal' , ), 6, (6, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 6, (6, (), [ (3, 0, None, None) ,
              (16387, 10, None, None) , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
     (( 'AddAsString' , 'addValue' , ), 7, (7, (), [ (8, 0, None, None) , ], 1 , 1 , 4 , 0 , 88 , (3, 0, None, None) , 0 , )),
-    (( 'GetAtAsString' , 'index' , 'retVal' , ), 8, (8, (), [ (3, 0, None, None) , 
+    (( 'GetAtAsString' , 'index' , 'retVal' , ), 8, (8, (), [ (3, 0, None, None) ,
              (16392, 10, None, None) , ], 1 , 1 , 4 , 0 , 96 , (3, 0, None, None) , 0 , )),
 ]
 
@@ -52241,10 +52252,10 @@ IENCompanyFileEventOperationList_vtables_dispatch_ = 1
 IENCompanyFileEventOperationList_vtables_ = [
     (( 'Add' , 'addValue' , ), 4, (4, (), [ (3, 0, None, None) , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
-    (( 'GetAt' , 'index' , 'retVal' , ), 6, (6, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 6, (6, (), [ (3, 0, None, None) ,
              (16387, 10, None, None) , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
     (( 'AddAsString' , 'addValue' , ), 7, (7, (), [ (8, 0, None, None) , ], 1 , 1 , 4 , 0 , 88 , (3, 0, None, None) , 0 , )),
-    (( 'GetAtAsString' , 'index' , 'retVal' , ), 8, (8, (), [ (3, 0, None, None) , 
+    (( 'GetAtAsString' , 'index' , 'retVal' , ), 8, (8, (), [ (3, 0, None, None) ,
              (16392, 10, None, None) , ], 1 , 1 , 4 , 0 , 96 , (3, 0, None, None) , 0 , )),
 ]
 
@@ -52252,10 +52263,10 @@ IENEnabledIfList_vtables_dispatch_ = 1
 IENEnabledIfList_vtables_ = [
     (( 'Add' , 'addValue' , ), 4, (4, (), [ (3, 0, None, None) , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
-    (( 'GetAt' , 'index' , 'retVal' , ), 6, (6, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 6, (6, (), [ (3, 0, None, None) ,
              (16387, 10, None, None) , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
     (( 'AddAsString' , 'addValue' , ), 7, (7, (), [ (8, 0, None, None) , ], 1 , 1 , 4 , 0 , 88 , (3, 0, None, None) , 0 , )),
-    (( 'GetAtAsString' , 'index' , 'retVal' , ), 8, (8, (), [ (3, 0, None, None) , 
+    (( 'GetAtAsString' , 'index' , 'retVal' , ), 8, (8, (), [ (3, 0, None, None) ,
              (16392, 10, None, None) , ], 1 , 1 , 4 , 0 , 96 , (3, 0, None, None) , 0 , )),
 ]
 
@@ -52263,10 +52274,10 @@ IENEnabledIfNotList_vtables_dispatch_ = 1
 IENEnabledIfNotList_vtables_ = [
     (( 'Add' , 'addValue' , ), 4, (4, (), [ (3, 0, None, None) , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
-    (( 'GetAt' , 'index' , 'retVal' , ), 6, (6, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 6, (6, (), [ (3, 0, None, None) ,
              (16387, 10, None, None) , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
     (( 'AddAsString' , 'addValue' , ), 7, (7, (), [ (8, 0, None, None) , ], 1 , 1 , 4 , 0 , 88 , (3, 0, None, None) , 0 , )),
-    (( 'GetAtAsString' , 'index' , 'retVal' , ), 8, (8, (), [ (3, 0, None, None) , 
+    (( 'GetAtAsString' , 'index' , 'retVal' , ), 8, (8, (), [ (3, 0, None, None) ,
              (16392, 10, None, None) , ], 1 , 1 , 4 , 0 , 96 , (3, 0, None, None) , 0 , )),
 ]
 
@@ -52274,10 +52285,10 @@ IENIncludeColumnList_vtables_dispatch_ = 1
 IENIncludeColumnList_vtables_ = [
     (( 'Add' , 'addValue' , ), 4, (4, (), [ (3, 0, None, None) , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
-    (( 'GetAt' , 'index' , 'retVal' , ), 6, (6, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 6, (6, (), [ (3, 0, None, None) ,
              (16387, 10, None, None) , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
     (( 'AddAsString' , 'addValue' , ), 7, (7, (), [ (8, 0, None, None) , ], 1 , 1 , 4 , 0 , 88 , (3, 0, None, None) , 0 , )),
-    (( 'GetAtAsString' , 'index' , 'retVal' , ), 8, (8, (), [ (3, 0, None, None) , 
+    (( 'GetAtAsString' , 'index' , 'retVal' , ), 8, (8, (), [ (3, 0, None, None) ,
              (16392, 10, None, None) , ], 1 , 1 , 4 , 0 , 96 , (3, 0, None, None) , 0 , )),
 ]
 
@@ -52285,10 +52296,10 @@ IENListDelTypeList_vtables_dispatch_ = 1
 IENListDelTypeList_vtables_ = [
     (( 'Add' , 'addValue' , ), 4, (4, (), [ (3, 0, None, None) , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
-    (( 'GetAt' , 'index' , 'retVal' , ), 6, (6, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 6, (6, (), [ (3, 0, None, None) ,
              (16387, 10, None, None) , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
     (( 'AddAsString' , 'addValue' , ), 7, (7, (), [ (8, 0, None, None) , ], 1 , 1 , 4 , 0 , 88 , (3, 0, None, None) , 0 , )),
-    (( 'GetAtAsString' , 'index' , 'retVal' , ), 8, (8, (), [ (3, 0, None, None) , 
+    (( 'GetAtAsString' , 'index' , 'retVal' , ), 8, (8, (), [ (3, 0, None, None) ,
              (16392, 10, None, None) , ], 1 , 1 , 4 , 0 , 96 , (3, 0, None, None) , 0 , )),
 ]
 
@@ -52296,10 +52307,10 @@ IENListEventOperationList_vtables_dispatch_ = 1
 IENListEventOperationList_vtables_ = [
     (( 'Add' , 'addValue' , ), 4, (4, (), [ (3, 0, None, None) , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
-    (( 'GetAt' , 'index' , 'retVal' , ), 6, (6, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 6, (6, (), [ (3, 0, None, None) ,
              (16387, 10, None, None) , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
     (( 'AddAsString' , 'addValue' , ), 7, (7, (), [ (8, 0, None, None) , ], 1 , 1 , 4 , 0 , 88 , (3, 0, None, None) , 0 , )),
-    (( 'GetAtAsString' , 'index' , 'retVal' , ), 8, (8, (), [ (3, 0, None, None) , 
+    (( 'GetAtAsString' , 'index' , 'retVal' , ), 8, (8, (), [ (3, 0, None, None) ,
              (16392, 10, None, None) , ], 1 , 1 , 4 , 0 , 96 , (3, 0, None, None) , 0 , )),
 ]
 
@@ -52307,10 +52318,10 @@ IENListEventTypeList_vtables_dispatch_ = 1
 IENListEventTypeList_vtables_ = [
     (( 'Add' , 'addValue' , ), 4, (4, (), [ (3, 0, None, None) , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
-    (( 'GetAt' , 'index' , 'retVal' , ), 6, (6, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 6, (6, (), [ (3, 0, None, None) ,
              (16387, 10, None, None) , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
     (( 'AddAsString' , 'addValue' , ), 7, (7, (), [ (8, 0, None, None) , ], 1 , 1 , 4 , 0 , 88 , (3, 0, None, None) , 0 , )),
-    (( 'GetAtAsString' , 'index' , 'retVal' , ), 8, (8, (), [ (3, 0, None, None) , 
+    (( 'GetAtAsString' , 'index' , 'retVal' , ), 8, (8, (), [ (3, 0, None, None) ,
              (16392, 10, None, None) , ], 1 , 1 , 4 , 0 , 96 , (3, 0, None, None) , 0 , )),
 ]
 
@@ -52318,10 +52329,10 @@ IENMappingCategoryList_vtables_dispatch_ = 1
 IENMappingCategoryList_vtables_ = [
     (( 'Add' , 'addValue' , ), 4, (4, (), [ (3, 0, None, None) , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
-    (( 'GetAt' , 'index' , 'retVal' , ), 6, (6, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 6, (6, (), [ (3, 0, None, None) ,
              (16387, 10, None, None) , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
     (( 'AddAsString' , 'addValue' , ), 7, (7, (), [ (8, 0, None, None) , ], 1 , 1 , 4 , 0 , 88 , (3, 0, None, None) , 0 , )),
-    (( 'GetAtAsString' , 'index' , 'retVal' , ), 8, (8, (), [ (3, 0, None, None) , 
+    (( 'GetAtAsString' , 'index' , 'retVal' , ), 8, (8, (), [ (3, 0, None, None) ,
              (16392, 10, None, None) , ], 1 , 1 , 4 , 0 , 96 , (3, 0, None, None) , 0 , )),
 ]
 
@@ -52329,10 +52340,10 @@ IENPaymentMethodTypeList_vtables_dispatch_ = 1
 IENPaymentMethodTypeList_vtables_ = [
     (( 'Add' , 'addValue' , ), 4, (4, (), [ (3, 0, None, None) , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
-    (( 'GetAt' , 'index' , 'retVal' , ), 6, (6, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 6, (6, (), [ (3, 0, None, None) ,
              (16387, 10, None, None) , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
     (( 'AddAsString' , 'addValue' , ), 7, (7, (), [ (8, 0, None, None) , ], 1 , 1 , 4 , 0 , 88 , (3, 0, None, None) , 0 , )),
-    (( 'GetAtAsString' , 'index' , 'retVal' , ), 8, (8, (), [ (3, 0, None, None) , 
+    (( 'GetAtAsString' , 'index' , 'retVal' , ), 8, (8, (), [ (3, 0, None, None) ,
              (16392, 10, None, None) , ], 1 , 1 , 4 , 0 , 96 , (3, 0, None, None) , 0 , )),
 ]
 
@@ -52340,10 +52351,10 @@ IENRemoveFromObjectList_vtables_dispatch_ = 1
 IENRemoveFromObjectList_vtables_ = [
     (( 'Add' , 'addValue' , ), 4, (4, (), [ (3, 0, None, None) , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
-    (( 'GetAt' , 'index' , 'retVal' , ), 6, (6, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 6, (6, (), [ (3, 0, None, None) ,
              (16387, 10, None, None) , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
     (( 'AddAsString' , 'addValue' , ), 7, (7, (), [ (8, 0, None, None) , ], 1 , 1 , 4 , 0 , 88 , (3, 0, None, None) , 0 , )),
-    (( 'GetAtAsString' , 'index' , 'retVal' , ), 8, (8, (), [ (3, 0, None, None) , 
+    (( 'GetAtAsString' , 'index' , 'retVal' , ), 8, (8, (), [ (3, 0, None, None) ,
              (16392, 10, None, None) , ], 1 , 1 , 4 , 0 , 96 , (3, 0, None, None) , 0 , )),
 ]
 
@@ -52351,10 +52362,10 @@ IENTxnDelTypeList_vtables_dispatch_ = 1
 IENTxnDelTypeList_vtables_ = [
     (( 'Add' , 'addValue' , ), 4, (4, (), [ (3, 0, None, None) , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
-    (( 'GetAt' , 'index' , 'retVal' , ), 6, (6, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 6, (6, (), [ (3, 0, None, None) ,
              (16387, 10, None, None) , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
     (( 'AddAsString' , 'addValue' , ), 7, (7, (), [ (8, 0, None, None) , ], 1 , 1 , 4 , 0 , 88 , (3, 0, None, None) , 0 , )),
-    (( 'GetAtAsString' , 'index' , 'retVal' , ), 8, (8, (), [ (3, 0, None, None) , 
+    (( 'GetAtAsString' , 'index' , 'retVal' , ), 8, (8, (), [ (3, 0, None, None) ,
              (16392, 10, None, None) , ], 1 , 1 , 4 , 0 , 96 , (3, 0, None, None) , 0 , )),
 ]
 
@@ -52362,10 +52373,10 @@ IENTxnEventOperationList_vtables_dispatch_ = 1
 IENTxnEventOperationList_vtables_ = [
     (( 'Add' , 'addValue' , ), 4, (4, (), [ (3, 0, None, None) , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
-    (( 'GetAt' , 'index' , 'retVal' , ), 6, (6, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 6, (6, (), [ (3, 0, None, None) ,
              (16387, 10, None, None) , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
     (( 'AddAsString' , 'addValue' , ), 7, (7, (), [ (8, 0, None, None) , ], 1 , 1 , 4 , 0 , 88 , (3, 0, None, None) , 0 , )),
-    (( 'GetAtAsString' , 'index' , 'retVal' , ), 8, (8, (), [ (3, 0, None, None) , 
+    (( 'GetAtAsString' , 'index' , 'retVal' , ), 8, (8, (), [ (3, 0, None, None) ,
              (16392, 10, None, None) , ], 1 , 1 , 4 , 0 , 96 , (3, 0, None, None) , 0 , )),
 ]
 
@@ -52373,10 +52384,10 @@ IENTxnEventTypeList_vtables_dispatch_ = 1
 IENTxnEventTypeList_vtables_ = [
     (( 'Add' , 'addValue' , ), 4, (4, (), [ (3, 0, None, None) , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
-    (( 'GetAt' , 'index' , 'retVal' , ), 6, (6, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 6, (6, (), [ (3, 0, None, None) ,
              (16387, 10, None, None) , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
     (( 'AddAsString' , 'addValue' , ), 7, (7, (), [ (8, 0, None, None) , ], 1 , 1 , 4 , 0 , 88 , (3, 0, None, None) , 0 , )),
-    (( 'GetAtAsString' , 'index' , 'retVal' , ), 8, (8, (), [ (3, 0, None, None) , 
+    (( 'GetAtAsString' , 'index' , 'retVal' , ), 8, (8, (), [ (3, 0, None, None) ,
              (16392, 10, None, None) , ], 1 , 1 , 4 , 0 , 96 , (3, 0, None, None) , 0 , )),
 ]
 
@@ -52384,10 +52395,10 @@ IENTxnTypeFilterList_vtables_dispatch_ = 1
 IENTxnTypeFilterList_vtables_ = [
     (( 'Add' , 'addValue' , ), 4, (4, (), [ (3, 0, None, None) , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
-    (( 'GetAt' , 'index' , 'retVal' , ), 6, (6, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 6, (6, (), [ (3, 0, None, None) ,
              (16387, 10, None, None) , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
     (( 'AddAsString' , 'addValue' , ), 7, (7, (), [ (8, 0, None, None) , ], 1 , 1 , 4 , 0 , 88 , (3, 0, None, None) , 0 , )),
-    (( 'GetAtAsString' , 'index' , 'retVal' , ), 8, (8, (), [ (3, 0, None, None) , 
+    (( 'GetAtAsString' , 'index' , 'retVal' , ), 8, (8, (), [ (3, 0, None, None) ,
              (16392, 10, None, None) , ], 1 , 1 , 4 , 0 , 96 , (3, 0, None, None) , 0 , )),
 ]
 
@@ -52395,10 +52406,10 @@ IENVisibleIfList_vtables_dispatch_ = 1
 IENVisibleIfList_vtables_ = [
     (( 'Add' , 'addValue' , ), 4, (4, (), [ (3, 0, None, None) , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
-    (( 'GetAt' , 'index' , 'retVal' , ), 6, (6, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 6, (6, (), [ (3, 0, None, None) ,
              (16387, 10, None, None) , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
     (( 'AddAsString' , 'addValue' , ), 7, (7, (), [ (8, 0, None, None) , ], 1 , 1 , 4 , 0 , 88 , (3, 0, None, None) , 0 , )),
-    (( 'GetAtAsString' , 'index' , 'retVal' , ), 8, (8, (), [ (3, 0, None, None) , 
+    (( 'GetAtAsString' , 'index' , 'retVal' , ), 8, (8, (), [ (3, 0, None, None) ,
              (16392, 10, None, None) , ], 1 , 1 , 4 , 0 , 96 , (3, 0, None, None) , 0 , )),
 ]
 
@@ -52406,10 +52417,10 @@ IENVisibleIfNotList_vtables_dispatch_ = 1
 IENVisibleIfNotList_vtables_ = [
     (( 'Add' , 'addValue' , ), 4, (4, (), [ (3, 0, None, None) , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
-    (( 'GetAt' , 'index' , 'retVal' , ), 6, (6, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 6, (6, (), [ (3, 0, None, None) ,
              (16387, 10, None, None) , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
     (( 'AddAsString' , 'addValue' , ), 7, (7, (), [ (8, 0, None, None) , ], 1 , 1 , 4 , 0 , 88 , (3, 0, None, None) , 0 , )),
-    (( 'GetAtAsString' , 'index' , 'retVal' , ), 8, (8, (), [ (3, 0, None, None) , 
+    (( 'GetAtAsString' , 'index' , 'retVal' , ), 8, (8, (), [ (3, 0, None, None) ,
              (16392, 10, None, None) , ], 1 , 1 , 4 , 0 , 96 , (3, 0, None, None) , 0 , )),
 ]
 
@@ -52421,7 +52432,7 @@ IEarnings_vtables_ = [
 
 IEarningsList_vtables_dispatch_ = 1
 IEarningsList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380960-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380960-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -52639,7 +52650,7 @@ IEmployeeRet_vtables_ = [
 
 IEmployeeRetList_vtables_dispatch_ = 1
 IEmployeeRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380627-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380627-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -52780,7 +52791,7 @@ IEstimateLineMod_vtables_ = [
 
 IEstimateLineModList_vtables_dispatch_ = 1
 IEstimateLineModList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380726-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380726-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -52809,7 +52820,7 @@ IEstimateLineRet_vtables_ = [
 
 IEstimateLineRetList_vtables_dispatch_ = 1
 IEstimateLineRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380759-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380759-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -52901,7 +52912,7 @@ IEstimateRet_vtables_ = [
 
 IEstimateRetList_vtables_dispatch_ = 1
 IEstimateRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380970-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380970-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -52930,7 +52941,7 @@ IExpenseLineAdd_vtables_ = [
 
 IExpenseLineAddList_vtables_dispatch_ = 1
 IExpenseLineAddList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380754-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380754-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -52952,7 +52963,7 @@ IExpenseLineMod_vtables_ = [
 
 IExpenseLineModList_vtables_dispatch_ = 1
 IExpenseLineModList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380886-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380886-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -52975,7 +52986,7 @@ IExpenseLineRet_vtables_ = [
 
 IExpenseLineRetList_vtables_dispatch_ = 1
 IExpenseLineRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380919-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380919-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -53032,7 +53043,7 @@ IGUIDList_vtables_dispatch_ = 1
 IGUIDList_vtables_ = [
     (( 'Add' , 'addValue' , ), 4, (4, (), [ (8, 0, None, None) , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
-    (( 'GetAt' , 'index' , 'retVal' , ), 6, (6, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 6, (6, (), [ (3, 0, None, None) ,
              (16392, 10, None, None) , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
 ]
 
@@ -53131,7 +53142,7 @@ IInventoryAdjustmentLineAdd_vtables_ = [
 
 IInventoryAdjustmentLineAddList_vtables_dispatch_ = 1
 IInventoryAdjustmentLineAddList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380573-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380573-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -53150,7 +53161,7 @@ IInventoryAdjustmentLineMod_vtables_ = [
 
 IInventoryAdjustmentLineModList_vtables_dispatch_ = 1
 IInventoryAdjustmentLineModList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380749-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380749-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -53169,7 +53180,7 @@ IInventoryAdjustmentLineRet_vtables_ = [
 
 IInventoryAdjustmentLineRetList_vtables_dispatch_ = 1
 IInventoryAdjustmentLineRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380779-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380779-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -53222,7 +53233,7 @@ IInventoryAdjustmentRet_vtables_ = [
 
 IInventoryAdjustmentRetList_vtables_dispatch_ = 1
 IInventoryAdjustmentRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380937-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380937-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -53294,7 +53305,7 @@ IInventorySiteRet_vtables_ = [
 
 IInventorySiteRetList_vtables_dispatch_ = 1
 IInventorySiteRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380563-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380563-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -53437,7 +53448,7 @@ IInvoiceLineMod_vtables_ = [
 
 IInvoiceLineModList_vtables_dispatch_ = 1
 IInvoiceLineModList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380647-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380647-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -53469,7 +53480,7 @@ IInvoiceLineRet_vtables_ = [
 
 IInvoiceLineRetList_vtables_dispatch_ = 1
 IInvoiceLineRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380689-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380689-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -53577,7 +53588,7 @@ IInvoiceRet_vtables_ = [
 
 IInvoiceRetList_vtables_dispatch_ = 1
 IInvoiceRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380891-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380891-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -53661,7 +53672,7 @@ IItemDiscountRet_vtables_ = [
 
 IItemDiscountRetList_vtables_dispatch_ = 1
 IItemDiscountRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380604-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380604-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -53770,7 +53781,7 @@ IItemFixedAssetRet_vtables_ = [
 
 IItemFixedAssetRetList_vtables_dispatch_ = 1
 IItemFixedAssetRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380867-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380867-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -53809,7 +53820,7 @@ IItemGroupLineAdd_vtables_ = [
 
 IItemGroupLineList_vtables_dispatch_ = 1
 IItemGroupLineList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380612-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380612-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -53883,7 +53894,7 @@ IItemGroupRet_vtables_ = [
 
 IItemGroupRetList_vtables_dispatch_ = 1
 IItemGroupRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380472-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380472-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -53956,7 +53967,7 @@ IItemInventoryAssemblyLine_vtables_ = [
 
 IItemInventoryAssemblyLineList_vtables_dispatch_ = 1
 IItemInventoryAssemblyLineList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380852-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380852-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -54041,7 +54052,7 @@ IItemInventoryAssemblyRet_vtables_ = [
 
 IItemInventoryAssemblyRetList_vtables_dispatch_ = 1
 IItemInventoryAssemblyRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380907-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380907-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -54125,7 +54136,7 @@ IItemInventoryRet_vtables_ = [
 
 IItemInventoryRetList_vtables_dispatch_ = 1
 IItemInventoryRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380622-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380622-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -54179,7 +54190,7 @@ IItemLineMod_vtables_ = [
 
 IItemLineModList_vtables_dispatch_ = 1
 IItemLineModList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380734-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380734-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -54210,7 +54221,7 @@ IItemLineRet_vtables_ = [
 
 IItemLineRetList_vtables_dispatch_ = 1
 IItemLineRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380763-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380763-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -54289,7 +54300,7 @@ IItemNonInventoryRet_vtables_ = [
 
 IItemNonInventoryRetList_vtables_dispatch_ = 1
 IItemNonInventoryRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380934-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380934-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -54357,7 +54368,7 @@ IItemOtherChargeRet_vtables_ = [
 
 IItemOtherChargeRetList_vtables_dispatch_ = 1
 IItemOtherChargeRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380940-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380940-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -54419,7 +54430,7 @@ IItemPaymentRet_vtables_ = [
 
 IItemPaymentRetList_vtables_dispatch_ = 1
 IItemPaymentRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380797-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380797-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -54511,7 +54522,7 @@ IItemReceiptRet_vtables_ = [
 
 IItemReceiptRetList_vtables_dispatch_ = 1
 IItemReceiptRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380535-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380535-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -54581,7 +54592,7 @@ IItemSalesTaxGroupRet_vtables_ = [
 
 IItemSalesTaxGroupRetList_vtables_dispatch_ = 1
 IItemSalesTaxGroupRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380896-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380896-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -54632,7 +54643,7 @@ IItemSalesTaxRet_vtables_ = [
 
 IItemSalesTaxRetList_vtables_dispatch_ = 1
 IItemSalesTaxRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380507-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380507-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -54703,7 +54714,7 @@ IItemServiceRet_vtables_ = [
 
 IItemServiceRetList_vtables_dispatch_ = 1
 IItemServiceRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380693-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380693-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -54752,7 +54763,7 @@ IItemSitesRet_vtables_ = [
 
 IItemSitesRetList_vtables_dispatch_ = 1
 IItemSitesRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380552-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380552-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -54806,7 +54817,7 @@ IItemSubtotalRet_vtables_ = [
 
 IItemSubtotalRetList_vtables_dispatch_ = 1
 IItemSubtotalRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380764-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380764-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -54879,7 +54890,7 @@ IJobTypeRet_vtables_ = [
 
 IJobTypeRetList_vtables_dispatch_ = 1
 IJobTypeRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380850-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380850-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -54980,7 +54991,7 @@ IJournalEntryRet_vtables_ = [
 
 IJournalEntryRetList_vtables_dispatch_ = 1
 IJournalEntryRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380838-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380838-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -55002,7 +55013,7 @@ IJournalLineMod_vtables_ = [
 
 IJournalLineModList_vtables_dispatch_ = 1
 IJournalLineModList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380724-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380724-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -55042,7 +55053,7 @@ ILeadContacts_vtables_ = [
 
 ILeadContactsList_vtables_dispatch_ = 1
 ILeadContactsList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380975-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380975-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -55062,7 +55073,7 @@ ILeadContactsMod_vtables_ = [
 
 ILeadContactsModList_vtables_dispatch_ = 1
 ILeadContactsModList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380625-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380625-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -55082,7 +55093,7 @@ ILeadContactsRet_vtables_ = [
 
 ILeadContactsRetList_vtables_dispatch_ = 1
 ILeadContactsRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380678-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380678-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -55136,7 +55147,7 @@ ILeadRet_vtables_ = [
 
 ILeadRetList_vtables_dispatch_ = 1
 ILeadRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380878-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380878-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -55161,7 +55172,7 @@ ILinkedTxn_vtables_ = [
 
 ILinkedTxnList_vtables_dispatch_ = 1
 ILinkedTxnList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380637-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380637-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -55206,7 +55217,7 @@ IListDeletedRet_vtables_ = [
 
 IListDeletedRetList_vtables_dispatch_ = 1
 IListDeletedRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380953-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380953-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -55239,7 +55250,7 @@ IListEventSubscription_vtables_ = [
 
 IListEventSubscriptionList_vtables_dispatch_ = 1
 IListEventSubscriptionList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380597-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380597-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -55316,7 +55327,7 @@ ILocations_vtables_ = [
 
 ILocationsList_vtables_dispatch_ = 1
 ILocationsList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380655-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380655-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -55331,7 +55342,7 @@ ILocationsMod_vtables_ = [
 
 ILocationsModList_vtables_dispatch_ = 1
 ILocationsModList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380941-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380941-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -55347,7 +55358,7 @@ ILocationsRet_vtables_ = [
 
 ILocationsRetList_vtables_dispatch_ = 1
 ILocationsRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380966-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380966-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -55375,7 +55386,7 @@ IMappingAccount_vtables_ = [
 
 IMappingAccountList_vtables_dispatch_ = 1
 IMappingAccountList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380733-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380733-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -55396,7 +55407,7 @@ IMenuItem_vtables_ = [
 
 IMenuItemList_vtables_dispatch_ = 1
 IMenuItemList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380922-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380922-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -55447,7 +55458,7 @@ IMsgSetRequest_vtables_ = [
     (( 'Attributes' , 'pVal' , ), 1, (1, (), [ (16393, 10, None, "IID('{84A0B459-58B0-4552-A0A4-4391BD958DAC}')") , ], 1 , 2 , 4 , 0 , 56 , (3, 0, None, None) , 0 , )),
     (( 'ClearRequests' , ), 2, (2, (), [ ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'ToXMLString' , 'qbXMLRequest' , ), 3, (3, (), [ (16392, 10, None, None) , ], 1 , 1 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
-    (( 'Verify' , 'errorMsg' , 'isOK' , ), 4, (4, (), [ (16392, 2, None, None) , 
+    (( 'Verify' , 'errorMsg' , 'isOK' , ), 4, (4, (), [ (16392, 2, None, None) ,
              (16395, 10, None, None) , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
     (( 'RequestList' , 'pVal' , ), 5, (5, (), [ (16393, 10, None, "IID('{26BF3085-25C1-4590-A6A4-5B5DE4B99840}')") , ], 1 , 2 , 4 , 0 , 88 , (3, 0, None, None) , 0 , )),
     (( 'AppendCustomSummaryReportQueryRq' , 'val' , ), 7, (7, (), [ (16393, 10, None, "IID('{2F380399-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 96 , (3, 0, None, None) , 0 , )),
@@ -55836,7 +55847,7 @@ IORCreditMemoLineAdd_vtables_ = [
 
 IORCreditMemoLineAddList_vtables_dispatch_ = 1
 IORCreditMemoLineAddList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380239-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380239-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -55851,7 +55862,7 @@ IORCreditMemoLineMod_vtables_ = [
 
 IORCreditMemoLineModList_vtables_dispatch_ = 1
 IORCreditMemoLineModList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380240-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380240-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -55866,7 +55877,7 @@ IORCreditMemoLineRet_vtables_ = [
 
 IORCreditMemoLineRetList_vtables_dispatch_ = 1
 IORCreditMemoLineRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380429-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380429-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -55987,7 +55998,7 @@ IOREntityRet_vtables_ = [
 
 IOREntityRetList_vtables_dispatch_ = 1
 IOREntityRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380450-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380450-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -56002,7 +56013,7 @@ IOREstimateLineAdd_vtables_ = [
 
 IOREstimateLineAddList_vtables_dispatch_ = 1
 IOREstimateLineAddList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380225-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380225-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -56017,7 +56028,7 @@ IOREstimateLineMod_vtables_ = [
 
 IOREstimateLineModList_vtables_dispatch_ = 1
 IOREstimateLineModList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380227-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380227-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -56032,7 +56043,7 @@ IOREstimateLineRet_vtables_ = [
 
 IOREstimateLineRetList_vtables_dispatch_ = 1
 IOREstimateLineRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380425-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380425-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -56086,7 +56097,7 @@ IORInvoiceLineAdd_vtables_ = [
 
 IORInvoiceLineAddList_vtables_dispatch_ = 1
 IORInvoiceLineAddList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380208-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380208-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -56101,7 +56112,7 @@ IORInvoiceLineMod_vtables_ = [
 
 IORInvoiceLineModList_vtables_dispatch_ = 1
 IORInvoiceLineModList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380213-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380213-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -56116,7 +56127,7 @@ IORInvoiceLineRet_vtables_ = [
 
 IORInvoiceLineRetList_vtables_dispatch_ = 1
 IORInvoiceLineRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380422-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380422-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -56170,7 +56181,7 @@ IORItemLineAdd_vtables_ = [
 
 IORItemLineAddList_vtables_dispatch_ = 1
 IORItemLineAddList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380252-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380252-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -56185,7 +56196,7 @@ IORItemLineMod_vtables_ = [
 
 IORItemLineModList_vtables_dispatch_ = 1
 IORItemLineModList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380253-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380253-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -56200,7 +56211,7 @@ IORItemLineRet_vtables_ = [
 
 IORItemLineRetList_vtables_dispatch_ = 1
 IORItemLineRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380431-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380431-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -56225,7 +56236,7 @@ IORItemRet_vtables_ = [
 
 IORItemRetList_vtables_dispatch_ = 1
 IORItemRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380458-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380458-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -56254,7 +56265,7 @@ IORJournalLine_vtables_ = [
 
 IORJournalLineList_vtables_dispatch_ = 1
 IORJournalLineList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380285-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380285-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -56418,7 +56429,7 @@ IORPurchaseOrderLineAdd_vtables_ = [
 
 IORPurchaseOrderLineAddList_vtables_dispatch_ = 1
 IORPurchaseOrderLineAddList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380249-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380249-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -56433,7 +56444,7 @@ IORPurchaseOrderLineMod_vtables_ = [
 
 IORPurchaseOrderLineModList_vtables_dispatch_ = 1
 IORPurchaseOrderLineModList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380250-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380250-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -56448,7 +56459,7 @@ IORPurchaseOrderLineRet_vtables_ = [
 
 IORPurchaseOrderLineRetList_vtables_dispatch_ = 1
 IORPurchaseOrderLineRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380430-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380430-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -56513,7 +56524,7 @@ IORReportData_vtables_ = [
 
 IORReportDataList_vtables_dispatch_ = 1
 IORReportDataList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380437-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380437-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -56562,7 +56573,7 @@ IORSalesOrderLineAdd_vtables_ = [
 
 IORSalesOrderLineAddList_vtables_dispatch_ = 1
 IORSalesOrderLineAddList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380231-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380231-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -56577,7 +56588,7 @@ IORSalesOrderLineMod_vtables_ = [
 
 IORSalesOrderLineModList_vtables_dispatch_ = 1
 IORSalesOrderLineModList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380232-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380232-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -56592,7 +56603,7 @@ IORSalesOrderLineRet_vtables_ = [
 
 IORSalesOrderLineRetList_vtables_dispatch_ = 1
 IORSalesOrderLineRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380427-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380427-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -56621,7 +56632,7 @@ IORSalesReceiptLineAdd_vtables_ = [
 
 IORSalesReceiptLineAddList_vtables_dispatch_ = 1
 IORSalesReceiptLineAddList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380236-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380236-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -56636,7 +56647,7 @@ IORSalesReceiptLineMod_vtables_ = [
 
 IORSalesReceiptLineModList_vtables_dispatch_ = 1
 IORSalesReceiptLineModList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380237-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380237-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -56651,7 +56662,7 @@ IORSalesReceiptLineRet_vtables_ = [
 
 IORSalesReceiptLineRetList_vtables_dispatch_ = 1
 IORSalesReceiptLineRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380428-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380428-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -56725,7 +56736,7 @@ IORTermsRet_vtables_ = [
 
 IORTermsRetList_vtables_dispatch_ = 1
 IORTermsRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380452-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380452-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -57019,7 +57030,7 @@ IOtherNameRet_vtables_ = [
 
 IOtherNameRetList_vtables_dispatch_ = 1
 IOtherNameRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380784-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380784-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -57077,7 +57088,7 @@ IPaymentMethodRet_vtables_ = [
 
 IPaymentMethodRetList_vtables_dispatch_ = 1
 IPaymentMethodRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380684-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380684-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -57128,7 +57139,7 @@ IPayrollItemNonWageRet_vtables_ = [
 
 IPayrollItemNonWageRetList_vtables_dispatch_ = 1
 IPayrollItemNonWageRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380675-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380675-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -57164,7 +57175,7 @@ IPayrollItemWageRet_vtables_ = [
 
 IPayrollItemWageRetList_vtables_dispatch_ = 1
 IPayrollItemWageRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380632-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380632-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -57270,7 +57281,7 @@ IPriceLevelPerItemCurrency_vtables_ = [
 
 IPriceLevelPerItemList_vtables_dispatch_ = 1
 IPriceLevelPerItemList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380624-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380624-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -57290,7 +57301,7 @@ IPriceLevelPerItemRetCurrency_vtables_ = [
 
 IPriceLevelPerItemRetList_vtables_dispatch_ = 1
 IPriceLevelPerItemRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380851-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380851-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -57317,7 +57328,7 @@ IPriceLevelRet_vtables_ = [
 
 IPriceLevelRetList_vtables_dispatch_ = 1
 IPriceLevelRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380480-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380480-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -57449,7 +57460,7 @@ IPurchaseOrderLineMod_vtables_ = [
 
 IPurchaseOrderLineModList_vtables_dispatch_ = 1
 IPurchaseOrderLineModList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380512-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380512-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -57483,7 +57494,7 @@ IPurchaseOrderLineRet_vtables_ = [
 
 IPurchaseOrderLineRetList_vtables_dispatch_ = 1
 IPurchaseOrderLineRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380559-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380559-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -57577,7 +57588,7 @@ IPurchaseOrderRet_vtables_ = [
 
 IPurchaseOrderRetList_vtables_dispatch_ = 1
 IPurchaseOrderRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380849-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380849-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -57626,7 +57637,7 @@ IQBBaseRef_vtables_ = [
 
 IQBBaseRefList_vtables_dispatch_ = 1
 IQBBaseRefList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{7119CD49-3CD7-41FA-A542-424FCDA3CB6A}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{7119CD49-3CD7-41FA-A542-424FCDA3CB6A}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -57640,12 +57651,12 @@ IQBBoolType_vtables_ = [
 
 IQBDateTimeType_vtables_dispatch_ = 1
 IQBDateTimeType_vtables_ = [
-    (( 'SetValue' , 'val' , 'asDateOnly' , ), 5, (5, (), [ (7, 0, None, None) , 
+    (( 'SetValue' , 'val' , 'asDateOnly' , ), 5, (5, (), [ (7, 0, None, None) ,
              (11, 0, None, None) , ], 1 , 1 , 4 , 0 , 88 , (3, 0, None, None) , 0 , )),
     (( 'GetValue' , 'pVal' , ), 6, (6, (), [ (16391, 10, None, None) , ], 1 , 1 , 4 , 0 , 96 , (3, 0, None, None) , 0 , )),
-    (( 'SetTimeZone' , 'hours' , 'minutes' , ), 7, (7, (), [ (2, 0, None, None) , 
+    (( 'SetTimeZone' , 'hours' , 'minutes' , ), 7, (7, (), [ (2, 0, None, None) ,
              (2, 0, None, None) , ], 1 , 1 , 4 , 0 , 104 , (3, 0, None, None) , 0 , )),
-    (( 'GetTimeZone' , 'hours' , 'minutes' , ), 8, (8, (), [ (16386, 2, None, None) , 
+    (( 'GetTimeZone' , 'hours' , 'minutes' , ), 8, (8, (), [ (16386, 2, None, None) ,
              (16386, 2, None, None) , ], 1 , 1 , 4 , 0 , 112 , (3, 0, None, None) , 0 , )),
 ]
 
@@ -58898,36 +58909,36 @@ IQBQuanType_vtables_ = [
 
 IQBSessionManager_vtables_dispatch_ = 1
 IQBSessionManager_vtables_ = [
-    (( 'OpenConnection' , 'AppID' , 'AppName' , ), 1, (1, (), [ (8, 0, None, None) , 
+    (( 'OpenConnection' , 'AppID' , 'AppName' , ), 1, (1, (), [ (8, 0, None, None) ,
              (8, 0, None, None) , ], 1 , 1 , 4 , 0 , 56 , (3, 0, None, None) , 0 , )),
-    (( 'BeginSession' , 'qbFile' , 'openMode' , ), 2, (2, (), [ (8, 0, None, None) , 
+    (( 'BeginSession' , 'qbFile' , 'openMode' , ), 2, (2, (), [ (8, 0, None, None) ,
              (3, 0, None, None) , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'EndSession' , ), 3, (3, (), [ ], 1 , 1 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'CloseConnection' , ), 4, (4, (), [ ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
     (( 'GetCurrentCompanyFileName' , 'pFileName' , ), 5, (5, (), [ (16392, 10, None, None) , ], 1 , 1 , 4 , 0 , 88 , (3, 0, None, None) , 0 , )),
-    (( 'CreateMsgSetRequest' , 'Country' , 'qbXMLMajorVersion' , 'qbXMLMinorVersion' , 'request' , 
+    (( 'CreateMsgSetRequest' , 'Country' , 'qbXMLMajorVersion' , 'qbXMLMinorVersion' , 'request' ,
              ), 6, (6, (), [ (8, 0, None, None) , (2, 0, None, None) , (2, 0, None, None) , (16393, 10, None, "IID('{D14E3360-81C8-438D-9FA3-D9D4ECBA6226}')") , ], 1 , 1 , 4 , 0 , 96 , (3, 0, None, None) , 0 , )),
-    (( 'ToMsgSetResponse' , 'qbXMLResponse' , 'Country' , 'qbXMLMajorVersion' , 'qbXMLMinorVersion' , 
-             'responseSet' , ), 7, (7, (), [ (8, 0, None, None) , (8, 0, None, None) , (2, 0, None, None) , 
+    (( 'ToMsgSetResponse' , 'qbXMLResponse' , 'Country' , 'qbXMLMajorVersion' , 'qbXMLMinorVersion' ,
+             'responseSet' , ), 7, (7, (), [ (8, 0, None, None) , (8, 0, None, None) , (2, 0, None, None) ,
              (2, 0, None, None) , (16393, 10, None, "IID('{734346F1-5805-4F94-8C97-720B4FFF3D2C}')") , ], 1 , 1 , 4 , 0 , 104 , (3, 0, None, None) , 0 , )),
-    (( 'DoRequests' , 'request' , 'responseSet' , ), 8, (8, (), [ (9, 0, None, "IID('{D14E3360-81C8-438D-9FA3-D9D4ECBA6226}')") , 
+    (( 'DoRequests' , 'request' , 'responseSet' , ), 8, (8, (), [ (9, 0, None, "IID('{D14E3360-81C8-438D-9FA3-D9D4ECBA6226}')") ,
              (16393, 10, None, "IID('{734346F1-5805-4F94-8C97-720B4FFF3D2C}')") , ], 1 , 1 , 4 , 0 , 112 , (3, 0, None, None) , 0 , )),
-    (( 'GetVersion' , 'MajorVersion' , 'MinorVersion' , 'releaseLevel' , 'releaseNumber' , 
+    (( 'GetVersion' , 'MajorVersion' , 'MinorVersion' , 'releaseLevel' , 'releaseNumber' ,
              ), 9, (9, (), [ (16386, 2, None, None) , (16386, 2, None, None) , (16387, 2, None, None) , (16386, 2, None, None) , ], 1 , 1 , 4 , 0 , 120 , (3, 0, None, None) , 0 , )),
-    (( 'DoRequestsFromXMLString' , 'qbXMLRequest' , 'responseSet' , ), 10, (10, (), [ (8, 0, None, None) , 
+    (( 'DoRequestsFromXMLString' , 'qbXMLRequest' , 'responseSet' , ), 10, (10, (), [ (8, 0, None, None) ,
              (16393, 10, None, "IID('{734346F1-5805-4F94-8C97-720B4FFF3D2C}')") , ], 1 , 1 , 4 , 0 , 128 , (3, 0, None, None) , 0 , )),
     (( 'QBXMLVersionsForSession' , 'ppsa' , ), 11, (11, (), [ (24584, 10, None, None) , ], 1 , 2 , 4 , 0 , 136 , (3, 0, None, None) , 0 , )),
-    (( 'CreateSubscriptionMsgSetRequest' , 'qbXMLMajorVersion' , 'qbXMLMinorVersion' , 'request' , ), 12, (12, (), [ 
+    (( 'CreateSubscriptionMsgSetRequest' , 'qbXMLMajorVersion' , 'qbXMLMinorVersion' , 'request' , ), 12, (12, (), [
              (2, 0, None, None) , (2, 0, None, None) , (16393, 10, None, "IID('{D470688A-7E4E-47C5-88A6-0E666ACCFD7B}')") , ], 1 , 1 , 4 , 0 , 144 , (3, 0, None, None) , 0 , )),
-    (( 'ToSubscriptionMsgSetResponse' , 'qbXMLSubscriptionResponse' , 'qbXMLMajorVersion' , 'qbXMLMinorVersion' , 'responseSet' , 
+    (( 'ToSubscriptionMsgSetResponse' , 'qbXMLSubscriptionResponse' , 'qbXMLMajorVersion' , 'qbXMLMinorVersion' , 'responseSet' ,
              ), 13, (13, (), [ (8, 0, None, None) , (2, 0, None, None) , (2, 0, None, None) , (16393, 10, None, "IID('{F52ECBD4-9042-4003-886B-16D259A90B17}')") , ], 1 , 1 , 4 , 0 , 152 , (3, 0, None, None) , 0 , )),
-    (( 'DoSubscriptionRequests' , 'request' , 'responseSet' , ), 14, (14, (), [ (9, 0, None, "IID('{D470688A-7E4E-47C5-88A6-0E666ACCFD7B}')") , 
+    (( 'DoSubscriptionRequests' , 'request' , 'responseSet' , ), 14, (14, (), [ (9, 0, None, "IID('{D470688A-7E4E-47C5-88A6-0E666ACCFD7B}')") ,
              (16393, 10, None, "IID('{F52ECBD4-9042-4003-886B-16D259A90B17}')") , ], 1 , 1 , 4 , 0 , 160 , (3, 0, None, None) , 0 , )),
-    (( 'DoSubscriptionRequestsFromXMLString' , 'qbXMLSubscriptionRequest' , 'responseSet' , ), 15, (15, (), [ (8, 0, None, None) , 
+    (( 'DoSubscriptionRequestsFromXMLString' , 'qbXMLSubscriptionRequest' , 'responseSet' , ), 15, (15, (), [ (8, 0, None, None) ,
              (16393, 10, None, "IID('{F52ECBD4-9042-4003-886B-16D259A90B17}')") , ], 1 , 1 , 4 , 0 , 168 , (3, 0, None, None) , 0 , )),
-    (( 'ToEventsMsgSet' , 'qbXMLEventsResponse' , 'qbXMLMajorVersion' , 'qbXMLMinorVersion' , 'responseSet' , 
+    (( 'ToEventsMsgSet' , 'qbXMLEventsResponse' , 'qbXMLMajorVersion' , 'qbXMLMinorVersion' , 'responseSet' ,
              ), 16, (16, (), [ (8, 0, None, None) , (2, 0, None, None) , (2, 0, None, None) , (16393, 10, None, "IID('{2E11CCBF-FC7F-407D-87D7-250DE2F58A0E}')") , ], 1 , 1 , 4 , 0 , 176 , (3, 0, None, None) , 0 , )),
-    (( 'ToMsgSetRequest' , 'qbXMLRequest' , 'requestSet' , ), 17, (17, (), [ (8, 0, None, None) , 
+    (( 'ToMsgSetRequest' , 'qbXMLRequest' , 'requestSet' , ), 17, (17, (), [ (8, 0, None, None) ,
              (16393, 10, None, "IID('{D14E3360-81C8-438D-9FA3-D9D4ECBA6226}')") , ], 1 , 1 , 4 , 0 , 184 , (3, 0, None, None) , 0 , )),
     (( 'IsErrorRecoveryInfo' , 'bIsErrorRecoveryInfo' , ), 18, (18, (), [ (16395, 10, None, None) , ], 1 , 1 , 4 , 0 , 192 , (3, 0, None, None) , 0 , )),
     (( 'ClearErrorRecovery' , ), 19, (19, (), [ ], 1 , 1 , 4 , 0 , 200 , (3, 0, None, None) , 0 , )),
@@ -58939,11 +58950,11 @@ IQBSessionManager_vtables_ = [
     (( 'GetSavedMsgSetRequest' , 'requestSet' , ), 23, (23, (), [ (16393, 10, None, "IID('{D14E3360-81C8-438D-9FA3-D9D4ECBA6226}')") , ], 1 , 1 , 4 , 0 , 248 , (3, 0, None, None) , 0 , )),
     (( 'ErrorRecoveryID' , 'pVal' , ), 24, (24, (), [ (16393, 10, None, "IID('{B0839366-1D8C-4EAD-B6D3-25E8BEEDEB69}')") , ], 1 , 2 , 4 , 0 , 256 , (3, 0, None, None) , 0 , )),
     (( 'ConnectionType' , 'pVal' , ), 25, (25, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 264 , (3, 0, None, None) , 0 , )),
-    (( 'OpenConnection2' , 'AppID' , 'AppName' , 'connType' , ), 26, (26, (), [ 
+    (( 'OpenConnection2' , 'AppID' , 'AppName' , 'connType' , ), 26, (26, (), [
              (8, 0, None, None) , (8, 0, None, None) , (3, 0, None, None) , ], 1 , 1 , 4 , 0 , 272 , (3, 0, None, None) , 0 , )),
     (( 'QBAuthPreferences' , 'ppAuthPreferences' , ), 27, (27, (), [ (16393, 10, None, "IID('{A673B222-48DD-4EEA-82B0-B4A6172B1626}')") , ], 1 , 2 , 4 , 0 , 280 , (3, 0, None, None) , 0 , )),
     (( 'CommunicateOutOfProcess' , 'useOutOfProc' , ), 28, (28, (), [ (11, 1, None, None) , ], 1 , 1 , 4 , 0 , 288 , (3, 0, None, None) , 0 , )),
-    (( 'CommunicateOutOfProcessEx' , 'useOutOfProc' , 'outOfProcCLSID' , ), 29, (29, (), [ (11, 1, None, None) , 
+    (( 'CommunicateOutOfProcessEx' , 'useOutOfProc' , 'outOfProcCLSID' , ), 29, (29, (), [ (11, 1, None, None) ,
              (8, 0, None, None) , ], 1 , 1 , 4 , 0 , 296 , (3, 0, None, None) , 0 , )),
     (( 'QBXMLVersionsForSubscription' , 'ppsa' , ), 30, (30, (), [ (24584, 10, None, None) , ], 1 , 2 , 4 , 0 , 304 , (3, 0, None, None) , 0 , )),
 ]
@@ -58953,15 +58964,15 @@ IQBStringType_vtables_ = [
     (( 'SetValue' , 'val' , ), 5, (5, (), [ (8, 0, None, None) , ], 1 , 1 , 4 , 0 , 88 , (3, 0, None, None) , 0 , )),
     (( 'GetValue' , 'pVal' , ), 6, (6, (), [ (16392, 10, None, None) , ], 1 , 1 , 4 , 0 , 96 , (3, 0, None, None) , 0 , )),
     (( 'GetMaxLength' , 'pVal' , ), 7, (7, (), [ (16392, 10, None, None) , ], 1 , 1 , 4 , 0 , 104 , (3, 0, None, None) , 0 , )),
-    (( 'GetMaxLengthByEdition' , 'qbEdition' , 'pVal' , ), 8, (8, (), [ (3, 0, None, None) , 
+    (( 'GetMaxLengthByEdition' , 'qbEdition' , 'pVal' , ), 8, (8, (), [ (3, 0, None, None) ,
              (16392, 10, None, None) , ], 1 , 1 , 4 , 0 , 112 , (3, 0, None, None) , 0 , )),
 ]
 
 IQBTimeIntervalType_vtables_dispatch_ = 1
 IQBTimeIntervalType_vtables_ = [
-    (( 'SetValue' , 'hours' , 'minutes' , 'seconds' , 'isNegative' , 
+    (( 'SetValue' , 'hours' , 'minutes' , 'seconds' , 'isNegative' ,
              ), 5, (5, (), [ (2, 0, None, None) , (2, 0, None, None) , (2, 0, None, None) , (11, 0, None, None) , ], 1 , 1 , 4 , 0 , 88 , (3, 0, None, None) , 0 , )),
-    (( 'GetValue' , 'hours' , 'minutes' , 'seconds' , 'isNegative' , 
+    (( 'GetValue' , 'hours' , 'minutes' , 'seconds' , 'isNegative' ,
              ), 6, (6, (), [ (16386, 2, None, None) , (16386, 2, None, None) , (16386, 2, None, None) , (16395, 2, None, None) , ], 1 , 1 , 4 , 0 , 96 , (3, 0, None, None) , 0 , )),
 ]
 
@@ -58987,7 +58998,7 @@ IRateEntry_vtables_ = [
 
 IRateEntryList_vtables_dispatch_ = 1
 IRateEntryList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380709-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380709-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -59001,7 +59012,7 @@ IRateHistory_vtables_ = [
 
 IRateHistoryList_vtables_dispatch_ = 1
 IRateHistoryList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380802-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380802-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -59082,7 +59093,7 @@ IReceivePaymentRet_vtables_ = [
 
 IReceivePaymentRetList_vtables_dispatch_ = 1
 IReceivePaymentRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380908-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380908-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -59110,7 +59121,7 @@ IReceivePaymentToDepositRet_vtables_ = [
 
 IReceivePaymentToDepositRetList_vtables_dispatch_ = 1
 IReceivePaymentToDepositRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380876-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380876-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -59136,7 +59147,7 @@ IRefundAppliedToTxnAdd_vtables_ = [
 
 IRefundAppliedToTxnAddList_vtables_dispatch_ = 1
 IRefundAppliedToTxnAddList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380648-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380648-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -59156,7 +59167,7 @@ IRefundAppliedToTxnRet_vtables_ = [
 
 IRefundAppliedToTxnRetList_vtables_dispatch_ = 1
 IRefundAppliedToTxnRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380819-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380819-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -59171,7 +59182,7 @@ IRelatedUnit_vtables_ = [
 
 IRelatedUnitList_vtables_dispatch_ = 1
 IRelatedUnitList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F381001-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F381001-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -59250,7 +59261,7 @@ IRequest_vtables_ = [
 IRequestList_vtables_dispatch_ = 1
 IRequestList_vtables_ = [
     (( 'Count' , 'pVal' , ), 2, (2, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 56 , (3, 0, None, None) , 0 , )),
-    (( 'GetAt' , 'index' , 'retVal' , ), 3, (3, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 3, (3, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{015778AA-A359-4C6B-ACC0-623FFA03DE9F}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
 ]
 
@@ -59274,7 +59285,7 @@ IResponse_vtables_ = [
 IResponseList_vtables_dispatch_ = 1
 IResponseList_vtables_ = [
     (( 'Count' , 'pVal' , ), 2, (2, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 56 , (3, 0, None, None) , 0 , )),
-    (( 'GetAt' , 'index' , 'retVal' , ), 3, (3, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 3, (3, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{4D46484B-C69C-4A28-B798-5D56B5A2AD08}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
 ]
 
@@ -59454,7 +59465,7 @@ ISalesOrderLineMod_vtables_ = [
 
 ISalesOrderLineModList_vtables_dispatch_ = 1
 ISalesOrderLineModList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380945-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380945-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -59486,7 +59497,7 @@ ISalesOrderLineRet_vtables_ = [
 
 ISalesOrderLineRetList_vtables_dispatch_ = 1
 ISalesOrderLineRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380971-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380971-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -59592,7 +59603,7 @@ ISalesOrderRet_vtables_ = [
 
 ISalesOrderRetList_vtables_dispatch_ = 1
 ISalesOrderRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380993-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380993-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -59722,7 +59733,7 @@ ISalesReceiptLineMod_vtables_ = [
 
 ISalesReceiptLineModList_vtables_dispatch_ = 1
 ISalesReceiptLineModList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380925-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380925-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -59755,7 +59766,7 @@ ISalesReceiptLineRet_vtables_ = [
 
 ISalesReceiptLineRetList_vtables_dispatch_ = 1
 ISalesReceiptLineRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380946-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380946-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -59856,7 +59867,7 @@ ISalesReceiptRet_vtables_ = [
 
 ISalesReceiptRetList_vtables_dispatch_ = 1
 ISalesReceiptRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380644-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380644-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -59905,7 +59916,7 @@ ISalesRepRet_vtables_ = [
 
 ISalesRepRetList_vtables_dispatch_ = 1
 ISalesRepRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380826-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380826-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -59963,7 +59974,7 @@ ISalesTaxCodeRet_vtables_ = [
 
 ISalesTaxCodeRetList_vtables_dispatch_ = 1
 ISalesTaxCodeRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380634-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380634-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -59989,7 +60000,7 @@ ISalesTaxPayableLineRet_vtables_ = [
 
 ISalesTaxPayableLineRetList_vtables_dispatch_ = 1
 ISalesTaxPayableLineRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380718-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380718-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -60011,7 +60022,7 @@ ISalesTaxPayableRet_vtables_ = [
 
 ISalesTaxPayableRetList_vtables_dispatch_ = 1
 ISalesTaxPayableRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380664-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380664-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -60039,7 +60050,7 @@ ISalesTaxPaymentCheckLineAdd_vtables_ = [
 
 ISalesTaxPaymentCheckLineAddList_vtables_dispatch_ = 1
 ISalesTaxPaymentCheckLineAddList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380514-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380514-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -60055,7 +60066,7 @@ ISalesTaxPaymentCheckLineRet_vtables_ = [
 
 ISalesTaxPaymentCheckLineRetList_vtables_dispatch_ = 1
 ISalesTaxPaymentCheckLineRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380731-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380731-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -60107,7 +60118,7 @@ ISalesTaxPaymentCheckRet_vtables_ = [
 
 ISalesTaxPaymentCheckRetList_vtables_dispatch_ = 1
 ISalesTaxPaymentCheckRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380862-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380862-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -60139,7 +60150,7 @@ ISalesTaxReturnLineRet_vtables_ = [
 
 ISalesTaxReturnLineRetList_vtables_dispatch_ = 1
 ISalesTaxReturnLineRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380741-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380741-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -60154,7 +60165,7 @@ ISalesTaxReturnRet_vtables_ = [
 
 ISalesTaxReturnRetList_vtables_dispatch_ = 1
 ISalesTaxReturnRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380743-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380743-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -60189,7 +60200,7 @@ IService_vtables_ = [
 
 IServiceList_vtables_dispatch_ = 1
 IServiceList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380767-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380767-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -60205,7 +60216,7 @@ ISetCredit_vtables_ = [
 
 ISetCreditList_vtables_dispatch_ = 1
 ISetCreditList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F381010-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F381010-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -60242,7 +60253,7 @@ IShipMethodRet_vtables_ = [
 
 IShipMethodRetList_vtables_dispatch_ = 1
 IShipMethodRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380959-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380959-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -60266,7 +60277,7 @@ IShipToAddress_vtables_ = [
 
 IShipToAddressList_vtables_dispatch_ = 1
 IShipToAddressList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380998-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380998-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -60287,7 +60298,7 @@ IShippingDetailsLineRet_vtables_ = [
 
 IShippingDetailsLineRetList_vtables_dispatch_ = 1
 IShippingDetailsLineRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380690-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380690-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -60415,7 +60426,7 @@ IStandardTermsRet_vtables_ = [
 
 IStandardTermsRetList_vtables_dispatch_ = 1
 IStandardTermsRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380901-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380901-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -60442,7 +60453,7 @@ ISubscriptionMsgSetRequest_vtables_dispatch_ = 1
 ISubscriptionMsgSetRequest_vtables_ = [
     (( 'ClearRequests' , ), 1, (1, (), [ ], 1 , 1 , 4 , 0 , 56 , (3, 0, None, None) , 0 , )),
     (( 'ToXMLString' , 'qbXMLSubscriptionRequest' , ), 2, (2, (), [ (16392, 10, None, None) , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
-    (( 'Verify' , 'errorMsg' , 'isOK' , ), 3, (3, (), [ (16392, 2, None, None) , 
+    (( 'Verify' , 'errorMsg' , 'isOK' , ), 3, (3, (), [ (16392, 2, None, None) ,
              (16395, 10, None, None) , ], 1 , 1 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'AppendUIEventSubscriptionQueryRq' , 'val' , ), 4, (4, (), [ (16393, 10, None, "IID('{2F380439-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
     (( 'AppendUIExtensionSubscriptionQueryRq' , 'val' , ), 5, (5, (), [ (16393, 10, None, "IID('{2F380441-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 88 , (3, 0, None, None) , 0 , )),
@@ -60496,7 +60507,7 @@ ITemplateRet_vtables_ = [
 
 ITemplateRetList_vtables_dispatch_ = 1
 ITemplateRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380640-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380640-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -60614,7 +60625,7 @@ ITimeTrackingRet_vtables_ = [
 
 ITimeTrackingRetList_vtables_dispatch_ = 1
 ITimeTrackingRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380813-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380813-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -60695,7 +60706,7 @@ IToDoRet_vtables_ = [
 
 IToDoRetList_vtables_dispatch_ = 1
 IToDoRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380996-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380996-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -60790,7 +60801,7 @@ ITransactionRet_vtables_ = [
 
 ITransactionRetList_vtables_dispatch_ = 1
 ITransactionRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380795-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380795-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -60838,7 +60849,7 @@ ITransferInventoryLineAdd_vtables_ = [
 
 ITransferInventoryLineAddList_vtables_dispatch_ = 1
 ITransferInventoryLineAddList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380999-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380999-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -60856,7 +60867,7 @@ ITransferInventoryLineMod_vtables_ = [
 
 ITransferInventoryLineModList_vtables_dispatch_ = 1
 ITransferInventoryLineModList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380626-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380626-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -60875,7 +60886,7 @@ ITransferInventoryLineRet_vtables_ = [
 
 ITransferInventoryLineRetList_vtables_dispatch_ = 1
 ITransferInventoryLineRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380681-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380681-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -60922,7 +60933,7 @@ ITransferInventoryRet_vtables_ = [
 
 ITransferInventoryRetList_vtables_dispatch_ = 1
 ITransferInventoryRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380537-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380537-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -60969,7 +60980,7 @@ ITransferRet_vtables_ = [
 
 ITransferRetList_vtables_dispatch_ = 1
 ITransferRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380873-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380873-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -61045,7 +61056,7 @@ ITxnDeletedRet_vtables_ = [
 
 ITxnDeletedRetList_vtables_dispatch_ = 1
 ITxnDeletedRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380824-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380824-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -61079,7 +61090,7 @@ ITxnEventSubscription_vtables_ = [
 
 ITxnEventSubscriptionList_vtables_dispatch_ = 1
 ITxnEventSubscriptionList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F381002-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F381002-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -61131,7 +61142,7 @@ ITxnLineDetail_vtables_ = [
 
 ITxnLineDetailList_vtables_dispatch_ = 1
 ITxnLineDetailList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F381016-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F381016-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -61251,7 +61262,7 @@ IUnitOfMeasureSetRet_vtables_ = [
 
 IUnitOfMeasureSetRetList_vtables_dispatch_ = 1
 IUnitOfMeasureSetRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380833-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380833-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -61342,7 +61353,7 @@ IVehicleMileageRet_vtables_ = [
 
 IVehicleMileageRetList_vtables_dispatch_ = 1
 IVehicleMileageRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380531-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380531-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -61378,7 +61389,7 @@ IVehicleRet_vtables_ = [
 
 IVehicleRetList_vtables_dispatch_ = 1
 IVehicleRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380811-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380811-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -61514,7 +61525,7 @@ IVendorCreditRet_vtables_ = [
 
 IVendorCreditRetList_vtables_dispatch_ = 1
 IVendorCreditRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380511-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380511-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -61656,7 +61667,7 @@ IVendorRet_vtables_ = [
 
 IVendorRetList_vtables_dispatch_ = 1
 IVendorRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380683-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380683-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -61697,7 +61708,7 @@ IVendorTypeRet_vtables_ = [
 
 IVendorTypeRetList_vtables_dispatch_ = 1
 IVendorTypeRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380525-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380525-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
@@ -61759,7 +61770,7 @@ IWorkersCompCodeRet_vtables_ = [
 
 IWorkersCompCodeRetList_vtables_dispatch_ = 1
 IWorkersCompCodeRetList_vtables_ = [
-    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) , 
+    (( 'GetAt' , 'index' , 'retVal' , ), 4, (4, (), [ (3, 0, None, None) ,
              (16393, 10, None, "IID('{2F380951-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 64 , (3, 0, None, None) , 0 , )),
     (( 'Count' , 'pVal' , ), 5, (5, (), [ (16387, 10, None, None) , ], 1 , 2 , 4 , 0 , 72 , (3, 0, None, None) , 0 , )),
     (( 'Append' , 'retVal' , ), 6, (6, (), [ (16393, 10, None, "IID('{2F380951-CF63-429F-8D42-484276EEFBC5}')") , ], 1 , 1 , 4 , 0 , 80 , (3, 0, None, None) , 0 , )),
