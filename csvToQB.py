@@ -6,6 +6,7 @@ import sys
 import traceback
 from datetime import datetime
 from pathlib import Path
+from types import NoneType
 
 import QBComTypes as qb
 
@@ -16,7 +17,9 @@ def Error(trans):
     traceback.print_exc(file=sys.stderr)
 
 
-def LoadListsFromQB(sessionManager: qb.IQBSessionManager):
+def LoadListsFromQB(
+    sessionManager: qb.IQBSessionManager,
+) -> tuple[list[str], list[str]]:
     """Load lists from QuickBooks."""
 
     requestMsgSet = sessionManager.CreateMsgSetRequest("CA", 16, 0)
@@ -47,7 +50,7 @@ def PreCheck(
     sessionManager: qb.IQBSessionManager,
     transactions: list[dict],
     vendorName="Merchant Name",
-):
+) -> bool:
     """Pre-check the CSV file for valid accounts and vendors."""
     validAccounts, validVendors = LoadListsFromQB(sessionManager)
 
@@ -70,7 +73,7 @@ def PreCheck(
     return good
 
 
-def WalkRs(respMsgSet: qb.IMsgSetResponse):
+def WalkRs(respMsgSet: qb.IMsgSetResponse) -> None:
     """Walk the response message set."""
     if respMsgSet.ResponseList is None:
         return
@@ -92,7 +95,7 @@ def WalkRs(respMsgSet: qb.IMsgSetResponse):
                 Error(f"Unknown response type {qb.ENResponseType(respType).name}")
 
 
-def WalkDepositRet(depositRet: qb.IDepositRet):
+def WalkDepositRet(depositRet: qb.IDepositRet) -> None:
     """Walk the deposit return."""
     if depositRet is None:
         return
@@ -117,7 +120,7 @@ def WalkDepositRet(depositRet: qb.IDepositRet):
             )
 
 
-def WalkCheckRet(checkRet: qb.ICheckRet):
+def WalkCheckRet(checkRet: qb.ICheckRet) -> NoneType:
     """Walk the check return."""
     if checkRet is None:
         return
