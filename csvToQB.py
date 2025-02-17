@@ -155,8 +155,10 @@ def ProcessTransactions(
     for trans in transactions:
         if reimbursement:
             trnsDate = datetime.strptime(trans["Expense Date"], "%d/%m/%Y")
+            trnsId = trans["Expense ID"]
         else:
             trnsDate = datetime.strptime(trans["Expense Date"], "%Y-%m-%d")
+            trnsId = trans["Float Transaction ID"]
 
         trnsDesc = trans["Description"].strip()
         trnsMerch = trans[payeeNameField]
@@ -192,6 +194,12 @@ def ProcessTransactions(
             chkAddRq.IsToBePrinted.SetValue(False)
             chkAddRq.TxnDate.SetValue(trnsDate)
             chkAddRq.PayeeEntityRef.FullName.SetValue(trnsMerch)
+            chkAddRq.Memo.SetValue(trnsDesc)
+
+            applyChqToTxnAdd: qb.IApplyCheckToTxnAdd = chkAddRq.ApplyCheckToTxnAddList.Append()
+            applyChqToTxnAdd.TxnID.SetValue(trnsId)
+            applyChqToTxnAdd.Amount.SetValue(trnsAmount)
+
             expAdd: qb.IExpenseLineAdd = chkAddRq.ExpenseLineAddList.Append()
             expAdd.AccountRef.FullName.SetValue(trnsGlcode)
             expAdd.Amount.SetValue(trnsSubtotal)
