@@ -12784,6 +12784,12 @@ class IDepositRet(DispatchBaseClass):
             raise TypeError("This object does not support enumeration")
         return win32com.client.util.Iterator(ob, None)
 
+    @property
+    def depositLineRetList(self) -> IDepositLineRetList | None:
+        if self.DepositLineRetList is None:
+            return None
+        return IDepositLineRetList(self.DepositLineRetList)
+
 class IDepositRetList(DispatchBaseClass):
     'IDepositRetList Interface'
     CLSID = IID('{2F381147-CF63-429F-8D42-484276EEFBC5}')
@@ -25083,6 +25089,7 @@ class IMsgSetResponse(DispatchBaseClass):
     }
     _prop_map_put_ = {
     }
+
     def __iter__(self):
         "Return a Python iterator for this object"
         try:
@@ -25090,6 +25097,13 @@ class IMsgSetResponse(DispatchBaseClass):
         except pythoncom.error:
             raise TypeError("This object does not support enumeration")
         return win32com.client.util.Iterator(ob, None)
+
+    @property
+    def responseList(self) -> "IResponseList | None":
+        if self.ResponseList is None:
+            return None
+
+        return IResponseList(self.ResponseList)
 
 class IMultiCurrencyPreferences(DispatchBaseClass):
     'IMultiCurrencyPreferences Interface'
