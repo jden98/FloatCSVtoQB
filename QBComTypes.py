@@ -23230,7 +23230,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IAccountQuery
-    def AppendAccountQueryRq(self):
+    def AppendAccountQueryRq(self) -> IAccountQuery:
         'method AppendAccountQueryRq'
         ret = self._oleobj_.InvokeTypes(79, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24994,7 +24994,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IVendorQuery
-    def AppendVendorQueryRq(self):
+    def AppendVendorQueryRq(self) -> "IVendorQuery":
         'method AppendVendorQueryRq'
         ret = self._oleobj_.InvokeTypes(29, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -40324,7 +40324,7 @@ class IQBSessionManager(DispatchBaseClass):
         return ret
 
     # Result is of type IMsgSetResponse
-    def DoRequests(self, request: IMsgSetRequest):
+    def DoRequests(self, request: IMsgSetRequest) -> IMsgSetResponse:
         'method DoRequests'
         ret = self._oleobj_.InvokeTypes(8, LCID, 1, (9, 0), ((9, 0),),request
             )

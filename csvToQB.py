@@ -74,14 +74,10 @@ def PreCheck(
 
 def WalkRs(respMsgSet: qb.IMsgSetResponse) -> None:
     """Walk the response message set."""
-    if respMsgSet.ResponseList is None:
+    if respMsgSet.responseList is None:
         return
 
-    respList = respMsgSet.ResponseList
-    if respList is None:
-        return
-
-    for resp in respList:
+    for resp in respMsgSet.responseList:
         if resp.StatusCode >= 0 and resp.Detail is not None:
             respType = int(resp.Type.GetValue())
             if respType == qb.ENResponseType.rtDepositAddRs:
