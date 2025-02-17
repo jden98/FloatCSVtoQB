@@ -116,13 +116,13 @@ def walkCheckRet(checkRet: qb.ICheckRet):
 
     if checkRet.ExpenseLineRetList is not None:
         for i in range(checkRet.ExpenseLineRetList.Count):
-            depositLineRet: qb.IDepositLineRet = depositRet.DepositLineRetList.GetAt(i)
-            if depositLineRet.AccountRef is not None:
-                accountRef = depositLineRet.AccountRef
+            expenseLineRet: qb.IExpenseLineRet = checkRet.ExpenseLineRetList.GetAt(i)
+            if expenseLineRet.AccountRef is not None:
+                accountRef = expenseLineRet.AccountRef
                 lineAccount = accountRef.FullName.GetValue()
-            lineMemo = depositLineRet.Memo.GetValue()
-            lineAmount = depositLineRet.Amount.GetValue()
-            error(f"Deposit {txnDate} {txnToAccount} {txnMemo} {txnTotal} {lineAccount} {lineMemo} {lineAmount}")
+            lineMemo = expenseLineRet.Memo.GetValue()
+            lineAmount = expenseLineRet.Amount.GetValue()
+            error(f"Check {txnDate} {txnToAccount} {txnMemo} {txnTotal} {lineAccount} {lineMemo} {lineAmount}")
 
 
 def main(inputFileName, iifFileName):
