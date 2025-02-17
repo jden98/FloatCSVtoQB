@@ -40292,7 +40292,7 @@ class IQBSessionManager(DispatchBaseClass):
             , outOfProcCLSID)
 
     # Result is of type IMsgSetRequest
-    def CreateMsgSetRequest(self, Country=defaultNamedNotOptArg, qbXMLMajorVersion=defaultNamedNotOptArg, qbXMLMinorVersion=defaultNamedNotOptArg):
+    def CreateMsgSetRequest(self, Country: str, qbXMLMajorVersion: int, qbXMLMinorVersion: int) -> IMsgSetRequest:
         'method CreateMsgSetRequest'
         ret = self._oleobj_.InvokeTypes(6, LCID, 1, (9, 0), ((8, 0), (2, 0), (2, 0)),Country
             , qbXMLMajorVersion, qbXMLMinorVersion)
@@ -40379,7 +40379,7 @@ class IQBSessionManager(DispatchBaseClass):
         'method IsErrorRecoveryInfo'
         return self._oleobj_.InvokeTypes(18, LCID, 1, (11, 0), (),)
 
-    def OpenConnection(self, AppID=defaultNamedNotOptArg, AppName=defaultNamedNotOptArg):
+    def OpenConnection(self, AppID: str, AppName: str):
         'method OpenConnection'
         return self._oleobj_.InvokeTypes(1, LCID, 1, (24, 0), ((8, 0), (8, 0)),AppID
             , AppName)
