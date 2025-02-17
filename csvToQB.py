@@ -4,6 +4,7 @@
 import csv
 import sys
 import traceback
+import typing
 from datetime import datetime
 
 import QBComTypes as qb
@@ -72,15 +73,16 @@ def walkRs(respMsgSet: qb.IMsgSetResponse):
         return
 
     for resp in respList:
-        if resp.StatusCode >= 0:
-            if resp.Detail is not None:
-                respType = qb.ENResponseType(resp.Type.GetValue())
-                if respType == qb.constants.rtDepositAddRs:
-                    depositRet: qb.IDepositRet = qb.IDepositRet(resp.Detail)
-                    walkDepositRet(depositRet)
-                if respType == qb.constants.rtCheckAddRs:
-                    checkRet: qb.ICheckRet = qb.ICheckRet(resp.Detail)
-                    walkCheckRet(checkRet)
+        if resp.StatusCode >= 0 and resp.Detail is not None:
+            respType = typing.cast(int, resp.Type.GetValue())
+            if respType == qb.ENResponseType.rtDepositAddRs:
+                depositRet: qb.IDepositRet = qb.IDepositRet(resp.Detail)
+                walkDepositRet(depositRet)
+            elif respType == qb.ENResponseType.rtCheckAddRs:
+                checkRet: qb.ICheckRet = qb.ICheckRet(resp.Detail)
+                walkCheckRet(checkRet)
+            else:
+                error(f"Unknown response type {qb.ENResponseType(respType).name}")
 
 def walkDepositRet(depositRet: qb.IDepositRet):
     """Walk the deposit return."""
