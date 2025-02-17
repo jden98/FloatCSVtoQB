@@ -127,11 +127,11 @@ def WalkCheckRet(checkRet: qb.ICheckRet, statusCode: int, statusSeverity: str, s
     txnToAccount = checkRet.AccountRef.FullName.GetValue()
     txnMemo = checkRet.Memo.GetValue()
     txnTotal = checkRet.Amount.GetValue()
-    txnRefNumer = checkRet.RefNumber.GetValue()
+    txnRefNumber = checkRet.RefNumber.GetValue()
     txnPayee = checkRet.PayeeEntityRef.FullName.GetValue()
 
     if statusCode == 0:
-        print(f"Created cheque Number {txnRefNumber} to {tnxPayee) for {txnTotal}")
+        print(f"Created cheque Number {txnRefNumber} to {txnPayee} for {txnTotal}")
     else:
         if checkRet.ExpenseLineRetList is not None:
             expenseLineRetList = qb.IExpenseLineRetList(checkRet.ExpenseLineRetList)
@@ -162,18 +162,15 @@ def ProcessTransactions(
     for trans in transactions:
         if reimbursement:
             trnsDate = datetime.strptime(trans["Expense Date"], "%d/%m/%Y")
-            trnsId = trans["Expense ID"]
         else:
-            trnsDate = datetime.strptime(trans["Expense Date"], "%Y-%m-%d")
-            trnsId = trans["Float Transaction ID"]
+            trnsDate = datetime.strptime(trans["Transaction DateTime"], "%Y-%m-%d %H:%M:%S.%f%z")
 
-        trnsId = "200000-1011023419"
         trnsDesc = trans["Description"].strip()
         trnsMerch = trans[payeeNameField]
         trnsGlcode = trans["GL Code ID"]
 
         try:
-            trnsAmount = -1 * float(trans.get("Total", 0))
+            trnsAmount = float(trans.get("Total", 0))
             trnsSubtotal = float(trans.get("Subtotal", 0))
             trnsTax = float(trans.get("Tax", 0))
         except ValueError:
@@ -187,13 +184,13 @@ def ProcessTransactions(
         ):
             # trnsType = "DEPOSIT"
             depAddRq = qb.IDepositAdd(requestMsgSet.AppendDepositAddRq())
-            depAddRq.DepositToAccount.FullName.SetValue("Float Financial")
+            depAddRq.DepositToAccountRef.FullName.SetValue("Float Financial")
             depAddRq.TxnDate.SetValue(trnsDate)
             depAddRq.Memo.SetValue(trnsDesc)
             depLineAddRq: qb.IDepositLineAdd = depAddRq.DepositLineAddList.Append()
             depositInfo = depLineAddRq.ORDepositLineAdd.DepositInfo
             depositInfo.AccountRef.FullName.SetValue(trnsGlcode)
-            depositInfo.Amount.SetValue(trnsAmount)
+            depositInfo.Amount.SetValue(-1 * trnsAmount)
 
         else:
             # trnsType = "CHEQUE"
@@ -203,10 +200,6 @@ def ProcessTransactions(
             chkAddRq.TxnDate.SetValue(trnsDate)
             chkAddRq.PayeeEntityRef.FullName.SetValue(trnsMerch)
             chkAddRq.Memo.SetValue(trnsDesc)
-
-            # applyChqToTxnAdd: qb.IApplyCheckToTxnAdd = chkAddRq.ApplyCheckToTxnAddList.Append()
-            # applyChqToTxnAdd.TxnID.SetValue(trnsId)
-            # applyChqToTxnAdd.Amount.SetValue(trnsAmount)
 
             expAdd: qb.IExpenseLineAdd = chkAddRq.ExpenseLineAddList.Append()
             expAdd.AccountRef.FullName.SetValue(trnsGlcode)
@@ -263,9 +256,7 @@ def main(inputFileName, iifFileName):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2 or len(sys.argv) > 3:
-        print("usage:   Convert2IIF input.csv output.iif")
-    elif len(sys.argv) == 2:
-        main(sys.argv[1], "")
+    if len(sys.argv) != 2 :
+        print("usage:   csvToQB input.csv")
     else:
-        main(sys.argv[1], sys.argv[2])
+        main(sys.argv[1], "")
