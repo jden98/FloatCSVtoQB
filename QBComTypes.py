@@ -3455,6 +3455,12 @@ class constants:
     rtvendorType                  =23         # from enum ENrowType
 
 
+class ENOpenMode(Enum):
+    omDontCare                    =2
+    omMultiUser                   =1
+    omSingleUser                  =0
+
+
 class ENResponseType(Enum):
     rtARRefundCreditCardAddRq     =1390
     rtARRefundCreditCardAddRs     =1397
@@ -40255,14 +40261,14 @@ class IQBSessionManager(DispatchBaseClass):
 
     def __enter__(self) -> "IQBSessionManager":
         self.OpenConnection("", "Test App")
-        self.BeginSession("", constants.omDontCare)
+        self.BeginSession("", ENOpenMode.omDontCare)
         return self
 
     def __exit__(self, exc_type, exc_value, exc_traceback):
         self.EndSession()
         self.CloseConnection()
 
-    def BeginSession(self, qbFile=defaultNamedNotOptArg, openMode=defaultNamedNotOptArg):
+    def BeginSession(self, qbFile=str, openMode=ENOpenMode):
         'method BeginSession'
         return self._oleobj_.InvokeTypes(2, LCID, 1, (24, 0), ((8, 0), (3, 0)),qbFile
             , openMode)
