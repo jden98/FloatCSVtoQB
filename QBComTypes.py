@@ -40282,7 +40282,7 @@ class IQBSessionManager(DispatchBaseClass):
         self.EndSession()
         self.CloseConnection()
 
-    def BeginSession(self, qbFile=str, openMode=ENOpenMode):
+    def BeginSession(self, qbFile: str, openMode: ENOpenMode):
         'method BeginSession'
         return self._oleobj_.InvokeTypes(2, LCID, 1, (24, 0), ((8, 0), (3, 0)),qbFile
             , openMode)
