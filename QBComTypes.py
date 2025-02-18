@@ -7,7 +7,7 @@
 makepy_version = '0.5.01'
 python_version = 0x30b09f0
 
-from enum import Enum
+from enum import IntEnum
 from typing import Iterator
 
 import win32com.client.CLSIDToClass, pythoncom, pywintypes
@@ -3455,7 +3455,13 @@ class constants:
     rtvendorType                  =23         # from enum ENrowType
 
 
-class ENResponseType(Enum):
+class ENOpenMode(IntEnum):
+    omDontCare                    =2
+    omMultiUser                   =1
+    omSingleUser                  =0
+
+
+class ENResponseType(IntEnum):
     rtARRefundCreditCardAddRq     =1390
     rtARRefundCreditCardAddRs     =1397
     rtARRefundCreditCardQueryRq   =1386
@@ -12777,6 +12783,12 @@ class IDepositRet(DispatchBaseClass):
         except pythoncom.error:
             raise TypeError("This object does not support enumeration")
         return win32com.client.util.Iterator(ob, None)
+
+    @property
+    def depositLineRetList(self) -> IDepositLineRetList | None:
+        if self.DepositLineRetList is None:
+            return None
+        return IDepositLineRetList(self.DepositLineRetList)
 
 class IDepositRetList(DispatchBaseClass):
     'IDepositRetList Interface'
@@ -23218,7 +23230,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IAccountQuery
-    def AppendAccountQueryRq(self):
+    def AppendAccountQueryRq(self) -> IAccountQuery:
         'method AppendAccountQueryRq'
         ret = self._oleobj_.InvokeTypes(79, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -24982,7 +24994,7 @@ class IMsgSetRequest(DispatchBaseClass):
         return ret
 
     # Result is of type IVendorQuery
-    def AppendVendorQueryRq(self):
+    def AppendVendorQueryRq(self) -> "IVendorQuery":
         'method AppendVendorQueryRq'
         ret = self._oleobj_.InvokeTypes(29, LCID, 1, (9, 0), (),)
         if ret is not None:
@@ -25077,6 +25089,7 @@ class IMsgSetResponse(DispatchBaseClass):
     }
     _prop_map_put_ = {
     }
+
     def __iter__(self):
         "Return a Python iterator for this object"
         try:
@@ -25084,6 +25097,13 @@ class IMsgSetResponse(DispatchBaseClass):
         except pythoncom.error:
             raise TypeError("This object does not support enumeration")
         return win32com.client.util.Iterator(ob, None)
+
+    @property
+    def responseList(self) -> "IResponseList | None":
+        if self.ResponseList is None:
+            return None
+
+        return IResponseList(self.ResponseList)
 
 class IMultiCurrencyPreferences(DispatchBaseClass):
     'IMultiCurrencyPreferences Interface'
@@ -40255,14 +40275,14 @@ class IQBSessionManager(DispatchBaseClass):
 
     def __enter__(self) -> "IQBSessionManager":
         self.OpenConnection("", "Test App")
-        self.BeginSession("", constants.omDontCare)
+        self.BeginSession("", ENOpenMode.omDontCare)
         return self
 
     def __exit__(self, exc_type, exc_value, exc_traceback):
         self.EndSession()
         self.CloseConnection()
 
-    def BeginSession(self, qbFile=defaultNamedNotOptArg, openMode=defaultNamedNotOptArg):
+    def BeginSession(self, qbFile: str, openMode: ENOpenMode):
         'method BeginSession'
         return self._oleobj_.InvokeTypes(2, LCID, 1, (24, 0), ((8, 0), (3, 0)),qbFile
             , openMode)
@@ -40286,7 +40306,7 @@ class IQBSessionManager(DispatchBaseClass):
             , outOfProcCLSID)
 
     # Result is of type IMsgSetRequest
-    def CreateMsgSetRequest(self, Country=defaultNamedNotOptArg, qbXMLMajorVersion=defaultNamedNotOptArg, qbXMLMinorVersion=defaultNamedNotOptArg):
+    def CreateMsgSetRequest(self, Country: str, qbXMLMajorVersion: int, qbXMLMinorVersion: int) -> IMsgSetRequest:
         'method CreateMsgSetRequest'
         ret = self._oleobj_.InvokeTypes(6, LCID, 1, (9, 0), ((8, 0), (2, 0), (2, 0)),Country
             , qbXMLMajorVersion, qbXMLMinorVersion)
@@ -40304,7 +40324,7 @@ class IQBSessionManager(DispatchBaseClass):
         return ret
 
     # Result is of type IMsgSetResponse
-    def DoRequests(self, request: IMsgSetRequest):
+    def DoRequests(self, request: IMsgSetRequest) -> IMsgSetResponse:
         'method DoRequests'
         ret = self._oleobj_.InvokeTypes(8, LCID, 1, (9, 0), ((9, 0),),request
             )
@@ -40373,7 +40393,7 @@ class IQBSessionManager(DispatchBaseClass):
         'method IsErrorRecoveryInfo'
         return self._oleobj_.InvokeTypes(18, LCID, 1, (11, 0), (),)
 
-    def OpenConnection(self, AppID=defaultNamedNotOptArg, AppName=defaultNamedNotOptArg):
+    def OpenConnection(self, AppID: str, AppName: str):
         'method OpenConnection'
         return self._oleobj_.InvokeTypes(1, LCID, 1, (24, 0), ((8, 0), (8, 0)),AppID
             , AppName)
