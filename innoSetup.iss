@@ -4,12 +4,13 @@
 #define MyAppName "Float2QB"
 #define MyAppVersion "1.0"
 #define MyAppPublisher "Jim den Otter"
-#define MyAppExeName "csvtoQB.exe"
+#define MyAppExeName "Float2QB.exe"
+#define MyAppIcoName "FLoat2QB.ico"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={{63B574B6-5355-43D1-BF7F-AD85D3DF381C}
+AppId={63B574B6-5355-43D1-BF7F-AD85D3DF381C}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 ;AppVerName={#MyAppName} {#MyAppVersion}
@@ -28,7 +29,7 @@ ArchitecturesInstallIn64BitMode=x64compatible
 DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only).
 ;PrivilegesRequired=lowest
-OutputBaseFilename=C2QBSetup
+OutputBaseFilename=Float2QBSetup
 SolidCompression=yes
 WizardStyle=modern
 
@@ -39,8 +40,9 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Users\jim.denotter\OneDrive - Spruce Grove Community Church\Apps\dist\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\jim.denotter\OneDrive - Spruce Grove Community Church\Apps\dist\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\dev\Float2QB\FloatCSVtoQB\dist\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\dev\Float2QB\FloatCSVtoQB\{#MyAppIcoName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\dev\Float2QB\FloatCSVtoQB\dist\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Registry]
@@ -67,5 +69,6 @@ end;
 
 [Icons]
 Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
-Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
+Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; \
+    IconFilename: "{app}\{#MyAppIcoName}"; Tasks: desktopicon
 

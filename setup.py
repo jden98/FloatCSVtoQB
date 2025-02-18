@@ -8,5 +8,5 @@ py2exe_options = dict(
                 compressed=True,  # Compress library.zip
                 )
 
-freeze(console=['csvToQB.py'],
+freeze(console=['Float2QB.py'],
        options={'py2exe': py2exe_options}) 
