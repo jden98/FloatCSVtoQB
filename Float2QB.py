@@ -219,9 +219,17 @@ def main(inputFileName, iifFileName):
 
 if __name__ == '__main__':
 
-    if len(sys.argv) < 2 or len(sys.argv) > 3:
-        print("usage:   Convert2IIF input.csv output.iif")
-    elif len(sys.argv) == 2:
-        main(sys.argv[1], "")
+    if len(sys.argv) != 2:
+        print("usage:   Float2QB input.csv")
+        # read the input filename from the console
+        inputFileName = input("Enter the name of the input file: ")
+        main(inputFileName, "")
     else:
-        main(sys.argv[1], sys.argv[2])
+        main(sys.argv[1], "")
+
+    # wait for keypress before closing the console window
+    input("Press Enter to close this window")
+
+
+
+
