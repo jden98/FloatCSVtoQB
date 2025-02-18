@@ -179,7 +179,6 @@ def ProcessTransactions(
 
         if (
             trnsAmount < 0
-            and trnsGlcode == "Other Income:Interest Income"
             and not reimbursement
         ):
             # trnsType = "DEPOSIT"
