@@ -1,3 +1,3 @@
 PY2EXE instructions:
 
-python setup.py PY2EXE
+python setup.py py2exe
