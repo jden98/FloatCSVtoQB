@@ -5,6 +5,7 @@
 #define MyAppVersion "1.0"
 #define MyAppPublisher "Jim den Otter"
 #define MyAppExeName "Float2QB.exe"
+#define MyAppIcoName "FLoat2QB.ico"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
@@ -40,6 +41,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "C:\dev\Float2QB\FloatCSVtoQB\dist\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\dev\Float2QB\FloatCSVtoQB\{#MyAppIcoName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\dev\Float2QB\FloatCSVtoQB\dist\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
@@ -67,5 +69,6 @@ end;
 
 [Icons]
 Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
-Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
+Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; \
+    IconFilename: "{app}\{#MyAppIcoName}"; Tasks: desktopicon
 
