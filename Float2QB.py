@@ -8,6 +8,11 @@ from pathlib import Path
 
 import QBComTypes as qb
 
+def DeQuote(s: str) -> str:
+    """Remove quotes from a string."""
+    if s.startswith('"') and s.endswith('"'):
+        return s[1:-1]
+    return s
 
 def Error(trans):
     """Log errors to stderr with traceback."""
@@ -77,6 +82,8 @@ def WalkRs(respMsgSet: qb.IMsgSetResponse) -> None:
         return
 
     for resp in respMsgSet.responseList:
+        if resp.StatusCode >0:
+            Error(f"Error: Code:{resp.StatusCode} Severity: {resp.StatusSeverity} Message: {resp.StatusMessage}")
         if resp.StatusCode >= 0 and resp.Detail is not None:
             respType = int(resp.Type.GetValue())
             if respType == qb.ENResponseType.rtDepositAddRs:
@@ -85,8 +92,39 @@ def WalkRs(respMsgSet: qb.IMsgSetResponse) -> None:
             elif respType == qb.ENResponseType.rtCheckAddRs:
                 checkRet: qb.ICheckRet = qb.ICheckRet(resp.Detail)
                 WalkCheckRet(checkRet, resp.StatusCode, resp.StatusSeverity, resp.StatusMessage)
+            elif respType == qb.ENResponseType.rtBillAddRs:
+                billRet: qb.IBillRet = qb.IBillRet(resp.Detail)
+                WalkBillRet(billRet, resp.StatusCode, resp.StatusSeverity, resp.StatusMessage)
             else:
                 Error(f"Unknown response type {qb.ENResponseType(respType).name}")
+
+def WalkBillRet(billRet: qb.IBillRet, statusCode: int, statusSeverity: str, statusMessage: str) -> None:
+    """Walk the bill return."""
+    if billRet is None:
+        return
+
+    # Get value of TxnDate
+    txnDate = billRet.TxnDate.GetValue()
+    txnToAccount = billRet.VendorRef.FullName.GetValue()
+    txnMemo = billRet.Memo.GetValue()
+    txnTotal = billRet.AmountDue.GetValue()
+
+    if statusCode == 0:
+        print(f"Created bill from {txnToAccount} for {txnTotal}")
+    else:
+        if billRet.ExpenseLineRetList is not None:
+            expenseLineRetList = qb.IExpenseLineRetList(billRet.ExpenseLineRetList)
+            for expenseLineRet in expenseLineRetList:
+                lineAccount = ""
+                if expenseLineRet.AccountRef is not None:
+                    accountRef = expenseLineRet.AccountRef
+                    lineAccount = accountRef.FullName.GetValue()
+                lineMemo = expenseLineRet.Memo.GetValue()
+                lineAmount = expenseLineRet.Amount.GetValue()
+                Error(
+                    f"Error creating Bill {txnDate} {txnToAccount} {txnMemo} {txnTotal} {lineAccount} "
+                    f"{lineMemo} {lineAmount}"
+                )
 
 
 def WalkDepositRet(depositRet: qb.IDepositRet, statusCode: int, statusSeverity: str, statusMessage: str) -> None:
@@ -151,8 +189,7 @@ def WalkCheckRet(checkRet: qb.ICheckRet, statusCode: int, statusSeverity: str, s
 def ProcessTransactions(
     sessionManager: qb.IQBSessionManager,
     transactions: list[dict],
-    payeeNameField: str,
-    reimbursement: bool,
+    payeeNameField: str
 ) -> tuple[int, qb.IMsgSetResponse]:
     """Process the transaction data."""
     requestMsgSet = sessionManager.CreateMsgSetRequest("CA", 16, 0)
@@ -160,10 +197,7 @@ def ProcessTransactions(
 
     count = 0
     for trans in transactions:
-        if reimbursement:
-            trnsDate = datetime.strptime(trans["Expense Date"], "%d/%m/%Y")
-        else:
-            trnsDate = datetime.strptime(trans["Transaction DateTime"], "%Y-%m-%d %H:%M:%S.%f%z")
+        trnsDate = datetime.strptime(trans["Transaction DateTime"], "%Y-%m-%d %H:%M:%S.%f%z")
 
         trnsDesc = trans["Description"].strip()
         trnsMerch = trans[payeeNameField]
@@ -177,10 +211,7 @@ def ProcessTransactions(
             Error("Invalid number format in transaction.")
             continue
 
-        if (
-            trnsAmount < 0
-            and not reimbursement
-        ):
+        if trnsAmount < 0:
             # trnsType = "DEPOSIT"
             depAddRq = qb.IDepositAdd(requestMsgSet.AppendDepositAddRq())
             depAddRq.DepositToAccountRef.FullName.SetValue("Float Financial")
@@ -216,6 +247,54 @@ def ProcessTransactions(
 
     return count, respMsgSet
 
+def ProcessReimbursements(
+    sessionManager: qb.IQBSessionManager,
+    transactions: list[dict],
+    payeeNameField: str
+) -> tuple[int, qb.IMsgSetResponse]:
+    """Process the transaction data."""
+    requestMsgSet = sessionManager.CreateMsgSetRequest("CA", 16, 0)
+    requestMsgSet.Attributes.OnError = qb.constants.roeContinue
+
+    count = 0
+    for trans in transactions:
+        trnsDate = datetime.strptime(trans["Expense Date"], "%d/%m/%Y")
+
+        trnsDesc = trans["Description"].strip()
+        trnsMerch = trans[payeeNameField]
+        trnsGlcode = trans["GL Code ID"]
+
+        try:
+            trnsAmount = float(trans.get("Total", 0))
+            trnsSubtotal = float(trans.get("Subtotal", 0))
+            trnsTax = float(trans.get("Tax", 0))
+        except ValueError:
+            Error("Invalid number format in transaction.")
+            continue
+
+        # trnsType = "BILL"
+        billAddRq = qb.IBillAdd(requestMsgSet.AppendBillAddRq())
+        billAddRq.APAccountRef.FullName.SetValue("Accounts Payable")
+        billAddRq.TxnDate.SetValue(trnsDate)
+        billAddRq.VendorRef.FullName.SetValue(trnsMerch)
+        billAddRq.Memo.SetValue(trnsDesc)
+
+        expAdd: qb.IExpenseLineAdd = billAddRq.ExpenseLineAddList.Append()
+        expAdd.AccountRef.FullName.SetValue(trnsGlcode)
+        expAdd.Amount.SetValue(trnsSubtotal)
+        expAdd.Memo.SetValue(trnsDesc)
+        if trnsTax != 0:
+            expAddT: qb.IExpenseLineAdd = billAddRq.ExpenseLineAddList.Append()
+            expAddT.AccountRef.FullName.SetValue("GST Accounts Receivable")
+            expAddT.Amount.SetValue(trnsTax)
+            expAddT.Memo.SetValue("Half of the GST")
+
+        count += 1
+
+    respMsgSet = qb.IMsgSetResponse(sessionManager.DoRequests(requestMsgSet))
+
+    return count, respMsgSet
+
 
 def main(inputFileName, iifFileName):
     count = 0
@@ -242,8 +321,13 @@ def main(inputFileName, iifFileName):
             if not PreCheck(sessionManager, transactions, payeeNameField):
                 return
 
-            count, respMsgSet = ProcessTransactions(
-                sessionManager, transactions, payeeNameField, reimbursement
+            if reimbursement:
+                count, respMsgSet = ProcessReimbursements(
+                    sessionManager, transactions, payeeNameField
+                )
+            else:
+                count, respMsgSet = ProcessTransactions(
+                    sessionManager, transactions, payeeNameField
             )
 
         WalkRs(respMsgSet)
@@ -259,7 +343,7 @@ if __name__ == '__main__':
     if len(sys.argv) != 2:
         print("usage:   Float2QB input.csv")
         # read the input filename from the console
-        inputFileName = input("Enter the name of the input file: ")
+        inputFileName = DeQuote(input("Enter the name of the input file: ").strip())
         main(inputFileName, "")
     else:
         main(sys.argv[1], "")

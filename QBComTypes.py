@@ -40274,7 +40274,7 @@ class IQBSessionManager(DispatchBaseClass):
         super().__init__(sessionManager)
 
     def __enter__(self) -> "IQBSessionManager":
-        self.OpenConnection("", "Test App")
+        self.OpenConnection("", "Float2QB App")
         self.BeginSession("", ENOpenMode.omDontCare)
         return self
 

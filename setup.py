@@ -2,9 +2,8 @@ from py2exe import freeze
 py2exe_options = dict(
                 ascii=True,  # Exclude encodings
                 excludes=['_ssl',  # Exclude _ssl
-                        'pyreadline', 'difflib', 'doctest', 'locale', 
-                        'optparse', 'calendar',
-                        "Tkconstants","Tkinter","tcl"],  # Exclude standard library
+                        'pyreadline', 'difflib', 'doctest', 'optparse', 
+                        "Tkconstants","Tkinter","tcl"],  # Exclude some standard libraries
                 compressed=True,  # Compress library.zip
                 )
 
