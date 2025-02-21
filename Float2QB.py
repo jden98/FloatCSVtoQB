@@ -1,6 +1,7 @@
 # Script to convert CSV to IIF output.
 
 import csv
+import os
 import sys
 import traceback
 from datetime import datetime
@@ -76,14 +77,17 @@ def PreCheck(
     return good
 
 
-def WalkRs(respMsgSet: qb.IMsgSetResponse) -> None:
+def WalkRs(respMsgSet: qb.IMsgSetResponse) -> bool:
     """Walk the response message set."""
+    
+    Success: bool = True
     if respMsgSet.responseList is None:
-        return
+        return True
 
     for resp in respMsgSet.responseList:
         if resp.StatusCode >0:
             Error(f"Error: Code:{resp.StatusCode} Severity: {resp.StatusSeverity} Message: {resp.StatusMessage}")
+            Success = False
         if resp.StatusCode >= 0 and resp.Detail is not None:
             respType = int(resp.Type.GetValue())
             if respType == qb.ENResponseType.rtDepositAddRs:
@@ -97,6 +101,8 @@ def WalkRs(respMsgSet: qb.IMsgSetResponse) -> None:
                 WalkBillRet(billRet, resp.StatusCode, resp.StatusSeverity, resp.StatusMessage)
             else:
                 Error(f"Unknown response type {qb.ENResponseType(respType).name}")
+                Success = False
+    return Success
 
 def WalkBillRet(billRet: qb.IBillRet, statusCode: int, statusSeverity: str, statusMessage: str) -> None:
     """Walk the bill return."""
@@ -330,9 +336,14 @@ def main(inputFileName, iifFileName):
                     sessionManager, transactions, payeeNameField
             )
 
-        WalkRs(respMsgSet)
-
-        print(f"Conversion complete, {count} transactions in {inputFileName}")
+        # if the response indicates success, prompt the user to remove the input file
+        if WalkRs(respMsgSet):
+            print(f"Conversion complete, processed {count} transactions from {inputFileName}")
+            delInputFile: bool = input("Enter 'Y' to delete the input file: ").lower().strip() == 'y'
+            if delInputFile:
+                os.remove(inputFilePath) # delete the input file
+        else:
+            Error(f"Failed to process {inputFileName} correctly!")
 
     except Exception as e:
         Error(f"Failed to process {inputFileName}: {e}")
