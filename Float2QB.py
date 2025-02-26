@@ -20,8 +20,9 @@ def DeQuote(s: str) -> str:
 
 def Error(trans):
     """Log errors to stderr with traceback."""
-    sys.stderr.write(f"{trans}\n")
-    traceback.print_exc(file=sys.stderr)
+    click.secho(f"Error: {trans}", fg='red', err=True)
+    if click.get_current_context().obj.get('debug', False):
+        click.secho(traceback.format_exc(), fg='red', err=True)
 
 def GetChar():
     return msvcrt.getch().decode("utf-8").lower()
@@ -307,7 +308,7 @@ def ProcessReimbursements(
     return count, respMsgSet
 
 
-def process_file(sessionManager, inputFileName):
+def process_file(inputFileName):
     """Main processing function that handles the CSV to IIF conversion."""
     count = 0
     inputFilePath = Path(inputFileName)
@@ -340,7 +341,7 @@ def process_file(sessionManager, inputFileName):
             else:
                 count, respMsgSet = ProcessTransactions(
                     sessionManager, transactions, payeeNameField
-            )
+                )
 
         # if the response indicates success, prompt the user to delete input file
         if WalkRs(respMsgSet):
@@ -356,25 +357,20 @@ def process_file(sessionManager, inputFileName):
 
 @click.command()
 @click.argument('input_file', type=click.Path(exists=True, dir_okay=False))
-def main(input_file):
+@click.option('--debug/--no-debug', default=False, help='Enable debug mode with full traceback')
+def main(input_file, debug):
     """Convert Float CSV file to QuickBooks IIF format and import it.
     
     INPUT_FILE: Path to the CSV file to process
-    """ 
-    try:
-        # Create session manager and begin session
-        sessionManager = Dispatch("QBXMLRP2.RequestProcessor")
-        sessionManager.OpenConnection("", "Float to QB Converter")
-        
-        process_file(sessionManager, input_file)
-        
+    """
+    ctx = click.get_current_context()
+    ctx.obj = {'debug': debug}
+    
+    try:      
+        process_file(input_file)
     except Exception as e:
-        Error(f"Failed to process {input_file}: {e}")
-    finally:
-        try:
-            sessionManager.CloseConnection()
-        except:
-            pass
+        Error(str(e))
+
 
 if __name__ == '__main__':
     main()
