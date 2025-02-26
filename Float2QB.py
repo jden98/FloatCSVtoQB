@@ -1,6 +1,7 @@
 # Script to convert CSV to IIF output.
 
 import csv
+import msvcrt
 import os
 import sys
 import traceback
@@ -20,6 +21,8 @@ def Error(trans):
     sys.stderr.write(f"{trans}\n")
     traceback.print_exc(file=sys.stderr)
 
+def GetChar():
+    return msvcrt.getch().decode("utf-8").lower()
 
 def LoadListsFromQB(
     sessionManager: qb.IQBSessionManager,
@@ -339,7 +342,9 @@ def main(inputFileName, iifFileName):
         # if the response indicates success, prompt the user to remove the input file
         if WalkRs(respMsgSet):
             print(f"Conversion complete, processed {count} transactions from {inputFileName}")
-            delInputFile: bool = input("Enter 'Y' to delete the input file: ").lower().strip() == 'y'
+
+            print("Enter 'Y' to delete the input file: ")
+            delInputFile: bool = GetChar() == 'y'
             if delInputFile:
                 os.remove(inputFilePath) # delete the input file
         else:
@@ -347,7 +352,6 @@ def main(inputFileName, iifFileName):
 
     except Exception as e:
         Error(f"Failed to process {inputFileName}: {e}")
-
 
 if __name__ == '__main__':
 
