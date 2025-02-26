@@ -1,4 +1,4 @@
-# Script to convert CSV to IIF output.
+# Script to import CSV to QB.
 
 import csv
 import msvcrt
@@ -18,9 +18,9 @@ def DeQuote(s: str) -> str:
         return s[1:-1]
     return s
 
-def Error(trans):
+def Error(message: str):
     """Log errors to stderr with traceback."""
-    click.secho(f"Error: {trans}", fg='red', err=True)
+    click.secho(f"Error: {message}", fg='red', err=True)
     if click.get_current_context().obj.get('debug', False):
         click.secho(traceback.format_exc(), fg='red', err=True)
 
@@ -309,7 +309,7 @@ def ProcessReimbursements(
 
 
 def process_file(inputFileName):
-    """Main processing function that handles the CSV to IIF conversion."""
+    """Main processing function that handles the CSV import to QB"""
     count = 0
     inputFilePath = Path(inputFileName)
     
@@ -356,20 +356,24 @@ def process_file(inputFileName):
         Error(f"Failed to process {inputFileName}: {e}")
 
 @click.command()
-@click.argument('input_file', type=click.Path(exists=True, dir_okay=False))
+@click.argument('input_file', type=click.Path(exists=True, dir_okay=False), required=False)
 @click.option('--debug/--no-debug', default=False, help='Enable debug mode with full traceback')
 def main(input_file, debug):
-    """Convert Float CSV file to QuickBooks IIF format and import it.
+    """Import Float CSV file to QuickBooks.
     
     INPUT_FILE: Path to the CSV file to process
     """
-    ctx = click.get_current_context()
-    ctx.obj = {'debug': debug}
-    
-    try:      
+    if not input_file:
+        input_file = click.prompt('Please enter the path to your Float CSV file', type=str).strip('"').strip()
+        if not os.path.exists(input_file):
+            Error(f"Error: File '{input_file}' does not exist.")
+            sys.exit(1)
+
+    try:
         process_file(input_file)
     except Exception as e:
-        Error(str(e))
+        Error(f"Error: {str(e)}")
+        sys.exit(1)
 
 
 if __name__ == '__main__':
