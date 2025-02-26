@@ -21,7 +21,7 @@ def DeQuote(s: str) -> str:
 def Error(message: str):
     """Log errors to stderr with traceback."""
     click.secho(f"Error: {message}", fg='red', err=True)
-    if click.get_current_context().obj.get('debug', False):
+    if click.get_current_context().params['debug']:
         click.secho(traceback.format_exc(), fg='red', err=True)
 
 def GetChar():
