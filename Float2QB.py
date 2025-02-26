@@ -1,4 +1,4 @@
-# Script to convert CSV to IIF output.
+# Script to import CSV to QB.
 
 import csv
 import msvcrt
@@ -7,6 +7,8 @@ import sys
 import traceback
 from datetime import datetime
 from pathlib import Path
+import click
+from win32com.client import Dispatch
 
 import QBComTypes as qb
 
@@ -16,10 +18,11 @@ def DeQuote(s: str) -> str:
         return s[1:-1]
     return s
 
-def Error(trans):
+def Error(message: str):
     """Log errors to stderr with traceback."""
-    sys.stderr.write(f"{trans}\n")
-    traceback.print_exc(file=sys.stderr)
+    click.secho(f"Error: {message}", fg='red', err=True)
+    if click.get_current_context().params['debug']:
+        click.secho(traceback.format_exc(), fg='red', err=True)
 
 def GetChar():
     return msvcrt.getch().decode("utf-8").lower()
@@ -119,7 +122,7 @@ def WalkBillRet(billRet: qb.IBillRet, statusCode: int, statusSeverity: str, stat
     txnTotal = billRet.AmountDue.GetValue()
 
     if statusCode == 0:
-        print(f"Created bill from {txnToAccount} for {txnTotal}")
+        click.echo(f"Created bill from {txnToAccount} for {txnTotal}")
     else:
         if billRet.ExpenseLineRetList is not None:
             expenseLineRetList = qb.IExpenseLineRetList(billRet.ExpenseLineRetList)
@@ -148,7 +151,7 @@ def WalkDepositRet(depositRet: qb.IDepositRet, statusCode: int, statusSeverity: 
     txnTotal = depositRet.DepositTotal.GetValue()
 
     if statusCode == 0:
-        print(f"Created deposit to {txnToAccount} for {txnTotal}")
+        click.echo(f"Created deposit to {txnToAccount} for {txnTotal}")
     else:
         if depositRet.depositLineRetList is not None:
             for depositLineRet in depositRet.depositLineRetList:
@@ -178,7 +181,7 @@ def WalkCheckRet(checkRet: qb.ICheckRet, statusCode: int, statusSeverity: str, s
     txnPayee = checkRet.PayeeEntityRef.FullName.GetValue()
 
     if statusCode == 0:
-        print(f"Created cheque Number {txnRefNumber} to {txnPayee} for {txnTotal}")
+        click.echo(f"Created cheque Number {txnRefNumber} to {txnPayee} for {txnTotal}")
     else:
         if checkRet.ExpenseLineRetList is not None:
             expenseLineRetList = qb.IExpenseLineRetList(checkRet.ExpenseLineRetList)
@@ -305,10 +308,11 @@ def ProcessReimbursements(
     return count, respMsgSet
 
 
-def main(inputFileName, iifFileName):
+def process_file(inputFileName):
+    """Main processing function that handles the CSV import to QB"""
     count = 0
     inputFilePath = Path(inputFileName)
-
+    
     try:
         # open the files
         with inputFilePath.open("r", newline="", encoding="utf-8") as inputFile:
@@ -337,32 +341,40 @@ def main(inputFileName, iifFileName):
             else:
                 count, respMsgSet = ProcessTransactions(
                     sessionManager, transactions, payeeNameField
-            )
+                )
 
-        # if the response indicates success, prompt the user to remove the input file
+        # if the response indicates success, prompt the user to delete input file
         if WalkRs(respMsgSet):
-            print(f"Conversion complete, processed {count} transactions from {inputFileName}")
+            click.echo(f"Conversion complete, processed {count} transactions from {inputFileName}")
 
-            print("Enter 'Y' to delete the input file: ")
-            delInputFile: bool = GetChar() == 'y'
-            if delInputFile:
+            if click.confirm("Would you like to delete the input file?"):
                 os.remove(inputFilePath) # delete the input file
         else:
-            Error(f"Failed to process {inputFileName} correctly!")
-
+            click.echo("Failed to import transactions to QuickBooks", err=True)
+            
     except Exception as e:
         Error(f"Failed to process {inputFileName}: {e}")
 
-if __name__ == '__main__':
-
-    if len(sys.argv) != 2:
-        print("usage:   Float2QB input.csv")
-        # read the input filename from the console
-        inputFileName = DeQuote(input("Enter the name of the input file: ").strip())
-        main(inputFileName, "")
-    else:
-        main(sys.argv[1], "")
-
-    # wait for keypress before closing the console window
-    input("Press Enter to close this window")
+@click.command()
+@click.argument('input_file', type=click.Path(exists=True, dir_okay=False), required=False)
+@click.option('--debug/--no-debug', default=False, help='Enable debug mode with full traceback')
+def main(input_file, debug):
+    """Import Float CSV file to QuickBooks.
     
+    INPUT_FILE: Path to the CSV file to process
+    """
+    if not input_file:
+        input_file = click.prompt('Please enter the path to your Float CSV file', type=str).strip('"').strip()
+        if not os.path.exists(input_file):
+            Error(f"Error: File '{input_file}' does not exist.")
+            sys.exit(1)
+
+    try:
+        process_file(input_file)
+    except Exception as e:
+        Error(f"Error: {str(e)}")
+        sys.exit(1)
+
+
+if __name__ == '__main__':
+    main()
