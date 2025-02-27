@@ -12,12 +12,6 @@ from win32com.client import Dispatch
 
 import QBComTypes as qb
 
-def DeQuote(s: str) -> str:
-    """Remove quotes from a string."""
-    if s.startswith('"') and s.endswith('"'):
-        return s[1:-1]
-    return s
-
 def Error(message: str):
     """Log errors to stderr with traceback."""
     click.secho(f"Error: {message}", fg='red', err=True)
@@ -364,7 +358,7 @@ def main(input_file, debug):
     INPUT_FILE: Path to the CSV file to process
     """
     if not input_file:
-        input_file = click.prompt('Please enter the path to your Float CSV file', type=str).strip('"').strip()
+        input_file = click.prompt('Please enter the path to your Float CSV file', type=str).strip().strip('"')
         if not os.path.exists(input_file):
             Error(f"Error: File '{input_file}' does not exist.")
             sys.exit(1)
