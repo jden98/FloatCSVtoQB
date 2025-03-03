@@ -1,6 +1,7 @@
 # Script to import CSV to QB.
 
 import csv
+import locale
 import os
 import re
 import sys
@@ -18,8 +19,8 @@ def Error(message: str):
     if click.get_current_context().params['debug']:
         click.secho(traceback.format_exc(), fg='red', err=True)
 
-def keysLower(inDict: dict) -> dict:
-    return {k.lower(): keysLower(v) if isinstance(v, dict) else v for k, v in inDict.items()}
+def KeysLower(inDict: dict) -> dict:
+    return {k.lower(): KeysLower(v) if isinstance(v, dict) else v for k, v in inDict.items()}
 
 def LoadListsFromQB(
     sessionManager: qb.IQBSessionManager,
@@ -50,16 +51,72 @@ def LoadListsFromQB(
     return validAccounts, validVendors
 
 
+def VerifyCSVKeys(transactions: list[dict], reimbursement: bool, maxSplits: int | None = None) -> bool:
+    """Verify that all required keys exist in the CSV transactions."""
+    if not transactions:
+        Error("No transactions found in CSV")
+        return False
+
+    first_trans = transactions[0]
+    missing_keys = []
+
+    # Common required keys for both types
+    required_keys = ["description"]
+
+    if reimbursement:
+        # Reimbursement specific keys
+        required_keys.extend([
+            "expense date",
+            "total",
+            "subtotal",
+            "tax",
+            "requester",
+            "gl code id"
+        ])
+    else:
+        # Transaction specific keys
+        required_keys.extend([
+            "transaction date",
+            "accounting vendor name",
+            "total dollars",
+            "transaction tax dollars",
+            "gl code id"
+        ])
+        
+        # Split transaction keys if needed
+        if maxSplits:
+            for i in range(1, maxSplits + 1):
+                split_keys = [
+                    f"line item {i} gl code id",
+                    f"line item {i} description",
+                    f"line item {i} amount",
+                    f"line item {i} tax amount"
+                ]
+                required_keys.extend(split_keys)
+
+    # Check for missing keys
+    for key in required_keys:
+        if key not in first_trans:
+            missing_keys.append(key)
+
+    if missing_keys:
+        Error(f"Missing required keys in CSV: {', '.join(missing_keys)}")
+        return False
+
+    return True
+
 def PreCheck(
     sessionManager: qb.IQBSessionManager,
     transactions: list[dict],
-    vendorName="merchant name",
+    reimbursement: bool,
     maxSplits: int | None = None,
 ) -> bool:
     """Pre-check the CSV file for valid accounts and vendors."""
     validAccounts, validVendors = LoadListsFromQB(sessionManager)
 
     good = True
+
+    vendorName = "requester" if reimbursement else "accounting vendor name"
 
     vendors = set(t[vendorName] for t in transactions)
     if maxSplits:
@@ -69,16 +126,15 @@ def PreCheck(
     else:
         accounts = set(t["gl code id"] for t in transactions)
 
-
     badVendors = vendors - set(validVendors)
     badAccounts = accounts - set(validAccounts)
 
     for vendor in badVendors:
-        Error(f"Invalid {vendorName}: {vendor}")
+        Error(f'Invalid {vendorName}: "{vendor}"')
         good = False
 
     for account in badAccounts:
-        Error(f"Invalid account name {account}")
+        Error(f'Invalid account name "{account}"')
         good = False
 
     return good
@@ -123,7 +179,7 @@ def WalkBillRet(billRet: qb.IBillRet, statusCode: int, statusSeverity: str, stat
     txnTotal = billRet.AmountDue.GetValue()
 
     if statusCode == 0:
-        click.echo(f"Created bill from {txnToAccount} for {txnTotal}")
+        click.echo(f"Created bill from {txnToAccount} for {locale.currency(txnTotal, grouping=True)}")
     else:
         if billRet.ExpenseLineRetList is not None:
             expenseLineRetList = qb.IExpenseLineRetList(billRet.ExpenseLineRetList)
@@ -135,8 +191,8 @@ def WalkBillRet(billRet: qb.IBillRet, statusCode: int, statusSeverity: str, stat
                 lineMemo = expenseLineRet.Memo.GetValue()
                 lineAmount = expenseLineRet.Amount.GetValue()
                 Error(
-                    f"Error creating Bill {txnDate} {txnToAccount} {txnMemo} {txnTotal} {lineAccount} "
-                    f"{lineMemo} {lineAmount}"
+                    f"Error creating Bill {txnDate} {txnToAccount} {txnMemo} {locale.currency(txnTotal, grouping=True)} {lineAccount} "
+                    f"{lineMemo} {locale.currency(lineAmount, grouping=True)}"
                 )
 
 
@@ -152,7 +208,7 @@ def WalkDepositRet(depositRet: qb.IDepositRet, statusCode: int, statusSeverity: 
     txnTotal = depositRet.DepositTotal.GetValue()
 
     if statusCode == 0:
-        click.echo(f"Created deposit to {txnToAccount} for {txnTotal}")
+        click.echo(f"Created deposit to {txnToAccount} for {locale.currency(txnTotal, grouping=True)}")
     else:
         if depositRet.depositLineRetList is not None:
             for depositLineRet in depositRet.depositLineRetList:
@@ -163,8 +219,8 @@ def WalkDepositRet(depositRet: qb.IDepositRet, statusCode: int, statusSeverity: 
                 lineMemo = depositLineRet.Memo.GetValue()
                 lineAmount = depositLineRet.Amount.GetValue()
                 Error(
-                    f"Error creating Deposit {txnDate} {txnToAccount} {txnMemo} {txnTotal} {lineAccount} "
-                    f"{lineMemo} {lineAmount}"
+                    f"Error creating Deposit {txnDate} {txnToAccount} {txnMemo} {locale.currency(txnTotal, grouping=True)} {lineAccount} "
+                    f"{lineMemo} {locale.currency(lineAmount, grouping=True)}"
                 )
 
 
@@ -182,7 +238,7 @@ def WalkCheckRet(checkRet: qb.ICheckRet, statusCode: int, statusSeverity: str, s
     txnPayee = checkRet.PayeeEntityRef.FullName.GetValue()
 
     if statusCode == 0:
-        click.echo(f"Created cheque Number {txnRefNumber} to {txnPayee} for {txnTotal}")
+        click.echo(f"Created cheque Number {txnRefNumber} to {txnPayee} for {locale.currency(txnTotal, grouping=True)}")
     else:
         if checkRet.ExpenseLineRetList is not None:
             expenseLineRetList = qb.IExpenseLineRetList(checkRet.ExpenseLineRetList)
@@ -194,15 +250,14 @@ def WalkCheckRet(checkRet: qb.ICheckRet, statusCode: int, statusSeverity: str, s
                 lineMemo = expenseLineRet.Memo.GetValue()
                 lineAmount = expenseLineRet.Amount.GetValue()
                 Error(
-                    f"Error creating Cheque {txnDate} {txnToAccount} {txnMemo} {txnTotal} {lineAccount} "
-                    f"{lineMemo} {lineAmount}"
+                    f"Error creating Cheque {txnDate} {txnToAccount} {txnMemo} {locale.currency(txnTotal,    grouping=True)} {lineAccount} "
+                    f"{lineMemo} {locale.currency(lineAmount, grouping=True)}"
                 )
 
 
 def ProcessTransactions(
     sessionManager: qb.IQBSessionManager,
     transactions: list[dict],
-    payeeNameField: str,
     maxSplits: int | None,
 ) -> tuple[int, qb.IMsgSetResponse]:
     """Process the transaction data."""
@@ -212,21 +267,21 @@ def ProcessTransactions(
     count = 0
     for trans in transactions:
         trnsDate = datetime.strptime(trans["transaction date"], "%Y-%m-%d %H:%M:%S.%f%z")
-        trnsMerch = trans[payeeNameField]
+        trnsMerch = trans["accounting vendor name"]
         trnsTotal = float(trans["total dollars"])
-        trnsSubtotal = float(trans["transaction subtotal dollars"])
+        trnsGlcode = trans["gl code id"]
         trnsTax = float(trans["transaction tax dollars"])
         trnsDesc = trans["description"]
 
         lineItems = []
         # if the file has any transactions with splits...
-        if not maxSplits:
+        if (not maxSplits) or trnsGlcode > "":
             # if this particular transaction has no splits
             lineItems.append({
                         'description': trnsDesc,
                         'total': trnsTotal,
                         'tax': trnsTax,
-                        'glcode': trans["gl code id"]
+                        'glcode': trnsGlcode
                     })
         else:
             # if this particular transaction has splits
@@ -291,7 +346,6 @@ def ProcessTransactions(
 def ProcessReimbursements(
     sessionManager: qb.IQBSessionManager,
     transactions: list[dict],
-    payeeNameField: str
 ) -> tuple[int, qb.IMsgSetResponse]:
     """Process the transaction data."""
     requestMsgSet = sessionManager.CreateMsgSetRequest("CA", 16, 0)
@@ -302,7 +356,7 @@ def ProcessReimbursements(
         trnsDate = datetime.strptime(trans["expense date"], "%d/%m/%Y")
 
         trnsDesc = trans["description"].strip()
-        trnsMerch = trans[payeeNameField]
+        trnsMerch = trans["requester"]
         trnsGlcode = trans["gl code id"]
 
         try:
@@ -341,39 +395,41 @@ def ProcessFile(inputFileName):
     """Main processing function that handles the CSV import to QB"""
     count = 0
     inputFilePath = Path(inputFileName)
-    
+
     try:
-        # open the files
-        with inputFilePath.open("r", newline="", encoding="utf-8") as inputFile:
+        with open(inputFilePath, "r", encoding="utf-8-sig") as inputFile:
             csvReader = csv.DictReader(inputFile)
 
             # load the full set of transactions into memory
-            transactions = [keysLower(d) for d in list(csvReader)]
+            transactions = [KeysLower(d) for d in list(csvReader)]
 
-            if "report name" in transactions[0]:
-                # this must be a reimbursement file
-                reimbursement = True
-                payeeNameField = "requester"
-            else:
-                # this must be a standard transactions file
-                reimbursement = False
-                payeeNameField = "accounting vendor name"
-                firstLine = transactions[0]
-                pattern = r"^line item (\d+)"
-                splits = [int(match.group(1)) for key in firstLine if (match := re.match(pattern, key))]
-                maxSplits = max(splits) if splits else None
+        if "report name" in transactions[0]:
+            # this must be a reimbursement file
+            reimbursement = True
+            maxSplits = None
+        else:
+            # this must be a standard transactions file
+            reimbursement = False
+            firstLine = transactions[0]
+            pattern = r"^line item (\d+)"
+            splits = [int(match.group(1)) for key in firstLine if (match := re.match(pattern, key))]
+            maxSplits = max(splits) if splits else None
+
+        # Verify CSV has all required keys
+        if not VerifyCSVKeys(transactions, reimbursement, maxSplits):
+            return
 
         with qb.IQBSessionManager() as sessionManager:
-            if not PreCheck(sessionManager, transactions, payeeNameField, maxSplits):
+            if not PreCheck(sessionManager, transactions, reimbursement, maxSplits):
                 return
 
             if reimbursement:
                 count, respMsgSet = ProcessReimbursements(
-                    sessionManager, transactions, payeeNameField
+                    sessionManager, transactions
                 )
             else:
                 count, respMsgSet = ProcessTransactions(
-                    sessionManager, transactions, payeeNameField, maxSplits
+                    sessionManager, transactions, maxSplits
                 )
 
         # if the response indicates success, prompt the user to delete input file
@@ -400,12 +456,16 @@ def main(input_file, debug):
         input_file = click.prompt('Please enter the path to your Float CSV file', type=str).strip().strip('"')
         if not os.path.exists(input_file):
             Error(f"Error: File '{input_file}' does not exist.")
+            click.prompt('Press Enter to exit', default='', show_default=False)
             sys.exit(1)
 
     try:
+        locale.setlocale(locale.LC_ALL, 'en_CA')
         ProcessFile(input_file)
+        click.prompt('Press Enter to exit', default='', show_default=False)
     except Exception as e:
         Error(f"Error: {str(e)}")
+        click.prompt('Press Enter to exit', default='', show_default=False)
         sys.exit(1)
 
 
