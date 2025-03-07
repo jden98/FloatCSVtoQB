@@ -1,5 +1,6 @@
 # Script to import CSV to QB.
 
+import click
 import csv
 import locale
 import os
@@ -8,7 +9,6 @@ import sys
 import traceback
 from datetime import datetime
 from pathlib import Path
-import click
 from win32com.client import Dispatch
 
 import QBComTypes as qb
@@ -117,25 +117,23 @@ def PreCheck(
     good = True
 
     vendorName = "requester" if reimbursement else "accounting vendor name"
+    
+    # loop through transactions and check for bad accounts and vendors
+    for t in transactions:
+        if t[vendorName] not in validVendors:
+            Error(f'Invalid {vendorName}: "{t[vendorName]}"')
+            good = False
 
-    vendors = set(t[vendorName] for t in transactions)
-    if maxSplits:
-        accounts = set()
-        for i in range(1, maxSplits + 1):
-            accounts.update(set(t[f"line item {i} gl code id"] for t in transactions))
-    else:
-        accounts = set(t["gl code id"] for t in transactions)
-
-    badVendors = vendors - set(validVendors)
-    badAccounts = accounts - set(validAccounts)
-
-    for vendor in badVendors:
-        Error(f'Invalid {vendorName}: "{vendor}"')
-        good = False
-
-    for account in badAccounts:
-        Error(f'Invalid account name "{account}"')
-        good = False
+        if maxSplits and t['line item 1 amount'] != "": # if the csv has splits, check if this transaction does
+            for i in range(1, maxSplits + 1):
+                if t[f"line item {i} amount"] != "": # the determining factor for whether a split exist is if it has an amount
+                    if t[f"line item {i} gl code id"] not in validAccounts:
+                        Error(f'Invalid gl code id: "{t[f"line item {i} gl code id"]}" in split {i} in transaction for {t["accounting vendor name"]}')
+                        good = False
+        else: # this transaction doesn't have splits
+            if t["gl code id"] not in validAccounts:
+                Error(f'Invalid gl code id: {t["gl code id"]} in transaction for {t["accounting vendor name"]}')
+                good = False
 
     return good
 
@@ -175,7 +173,7 @@ def WalkBillRet(billRet: qb.IBillRet, statusCode: int, statusSeverity: str, stat
     # Get value of TxnDate
     txnDate = billRet.TxnDate.GetValue()
     txnToAccount = billRet.VendorRef.FullName.GetValue()
-    txnMemo = billRet.Memo.GetValue()
+    txnMemo = billRet.Memo.GetValue() if billRet.Memo is not None else ""
     txnTotal = billRet.AmountDue.GetValue()
 
     if statusCode == 0:
@@ -204,7 +202,7 @@ def WalkDepositRet(depositRet: qb.IDepositRet, statusCode: int, statusSeverity: 
     # Get value of TxnDate
     txnDate = depositRet.TxnDate.GetValue()
     txnToAccount = depositRet.DepositToAccountRef.FullName.GetValue()
-    txnMemo = depositRet.Memo.GetValue()
+    txnMemo = depositRet.Memo.GetValue() if depositRet.Memo is not None else ""
     txnTotal = depositRet.DepositTotal.GetValue()
 
     if statusCode == 0:
@@ -232,7 +230,7 @@ def WalkCheckRet(checkRet: qb.ICheckRet, statusCode: int, statusSeverity: str, s
     # Get value of TxnDate
     txnDate = checkRet.TxnDate.GetValue()
     txnToAccount = checkRet.AccountRef.FullName.GetValue()
-    txnMemo = checkRet.Memo.GetValue()
+    txnMemo = checkRet.Memo.GetValue() if checkRet.Memo is not None else ""
     txnTotal = checkRet.Amount.GetValue()
     txnRefNumber = checkRet.RefNumber.GetValue()
     txnPayee = checkRet.PayeeEntityRef.FullName.GetValue()
