@@ -79,6 +79,7 @@ def VerifyCSVKeys(transactions: list[dict], reimbursement: bool, maxSplits: int 
             "transaction date",
             "accounting vendor name",
             "total dollars",
+            "transaction subtotal dollars",
             "transaction tax dollars",
             "gl code id"
         ])
@@ -128,11 +129,11 @@ def PreCheck(
             for i in range(1, maxSplits + 1):
                 if t[f"line item {i} amount"] != "": # the determining factor for whether a split exist is if it has an amount
                     if t[f"line item {i} gl code id"] not in validAccounts:
-                        Error(f'Invalid gl code id: "{t[f"line item {i} gl code id"]}" in split {i} in transaction for {t["accounting vendor name"]}')
+                        Error(f'Invalid gl code id: "{t[f"line item {i} gl code id"]}" in split {i} in transaction for {t[vendorName]}')
                         good = False
         else: # this transaction doesn't have splits
             if t["gl code id"] not in validAccounts:
-                Error(f'Invalid gl code id: {t["gl code id"]} in transaction for {t["accounting vendor name"]}')
+                Error(f'Invalid gl code id: {t["gl code id"]} in transaction for {t[vendorName]}')
                 good = False
 
     return good
@@ -266,7 +267,7 @@ def ProcessTransactions(
     for trans in transactions:
         trnsDate = datetime.strptime(trans["transaction date"], "%Y-%m-%d %H:%M:%S.%f%z")
         trnsMerch = trans["accounting vendor name"]
-        trnsTotal = float(trans["total dollars"])
+        trnsTotal = float(trans["transaction subtotal dollars"])
         trnsGlcode = trans["gl code id"]
         trnsTax = float(trans["transaction tax dollars"])
         trnsDesc = trans["description"]
