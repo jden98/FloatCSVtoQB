@@ -8054,13 +8054,11 @@ class IColDataList(DispatchBaseClass):
     }
     _prop_map_put_ = {
     }
-    def __iter__(self):
+    def __iter__(self) -> Iterator[IColData]:
         "Return a Python iterator for this object"
-        try:
-            ob = self._oleobj_.InvokeTypes(-4,LCID,3,(13, 10),())
-        except pythoncom.error:
-            raise TypeError("This object does not support enumeration")
-        return win32com.client.util.Iterator(ob, None)
+        for i in range(len(self)):
+            yield self.GetAt(i)
+            
     #This class has Count() property - allow len(ob) to provide this
     def __len__(self):
         return self._ApplyTypes_(*(5, 2, (3, 0), (), "Count", None))
@@ -28166,13 +28164,11 @@ class IORReportDataList(DispatchBaseClass):
     }
     _prop_map_put_ = {
     }
-    def __iter__(self):
+    def __iter__(self) -> Iterator[IDataRow]:
         "Return a Python iterator for this object"
-        try:
-            ob = self._oleobj_.InvokeTypes(-4,LCID,3,(13, 10),())
-        except pythoncom.error:
-            raise TypeError("This object does not support enumeration")
-        return win32com.client.util.Iterator(ob, None)
+        for i in range(len(self)):
+            yield self.GetAt(i)
+
     #This class has Count() property - allow len(ob) to provide this
     def __len__(self):
         return self._ApplyTypes_(*(5, 2, (3, 0), (), "Count", None))
