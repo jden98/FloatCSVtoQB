@@ -267,9 +267,9 @@ def ProcessTransactions(
     for trans in transactions:
         trnsDate = datetime.strptime(trans["transaction date"], "%Y-%m-%d %H:%M:%S.%f%z")
         trnsMerch = trans["accounting vendor name"]
-        trnsTotal = float(trans["transaction subtotal dollars"])
+        trnsTotal = locale.atof(trans["transaction subtotal dollars"])
         trnsGlcode = trans["gl code id"]
-        trnsTax = float(trans["transaction tax dollars"])
+        trnsTax = locale.atof(trans["transaction tax dollars"])
         trnsDesc = trans["description"]
 
         lineItems = []
@@ -289,8 +289,8 @@ def ProcessTransactions(
                 if trans.get(f"line item {item} gl code id", "") > "":
                     # Find corresponding fields for this line item
                     splitDesc = trans.get(f"line item {item} description", "")
-                    splitTotal = float(trans.get(f"line item {item} amount", 0))
-                    splitTax = float(trans.get(f"line item {item} tax Amount", 0))
+                    splitTotal = locale.atof(trans.get(f"line item {item} amount", 0))
+                    splitTax = locale.atof(trans.get(f"line item {item} tax Amount", 0))
                     splitGLCode = trans.get(f"line item {item} gl code id", "")
 
                     lineItems.append({
@@ -359,9 +359,9 @@ def ProcessReimbursements(
         trnsGlcode = trans["gl code id"]
 
         try:
-            trnsAmount = float(trans.get("total", 0))
-            trnsSubtotal = float(trans.get("subtotal", 0))
-            trnsTax = float(trans.get("tax", 0))
+            trnsAmount = locale.atof(trans.get("total", 0))
+            trnsSubtotal = locale.atof(trans.get("subtotal", 0))
+            trnsTax = locale.atof(trans.get("tax", 0))
         except ValueError:
             Error("Invalid number format in transaction.")
             continue
